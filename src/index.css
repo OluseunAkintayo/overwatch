@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&family=Mulish:wght@300;400;500;600;700;800&display=swap');
+
+html {
+  font-size: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Mulish', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Maven Pro', sans-serif;
+}
+
+.newProductModal {
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 750px !important;
+  border-radius: 0.25rem !important;
+}
