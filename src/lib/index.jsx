@@ -73,7 +73,7 @@ export const ModalWrapper = (props) => {
 	const { open, close, modalClass, children } = props;
 	const closeBtn = (
 		<Tooltip placement='left' title="Close" onClick={close}>
-			<CancelPresentationIcon sx={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '2rem' }} />
+			<CancelPresentationIcon sx={{ color: 'rgba(0, 0, 0, 0.4)', fontSize: '2rem' }} />
 		</Tooltip>
 	);
 

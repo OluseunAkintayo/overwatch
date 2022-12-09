@@ -11,22 +11,16 @@ import { Visibility } from '@mui/icons-material';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleMenu = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', paddingRight: 0 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'pointer' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '', cursor: 'pointer' }}>
             <Visibility />
-            <Typography variant="h6" sx={{ fontWeight: 900 }}>OVERWATCH</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 900 }}>VERWATCH</Typography>
           </Box>
             <div>
               <IconButton
@@ -40,13 +34,13 @@ const Header = () => {
                 <AccountCircle />
               </IconButton>
               <Menu
-                id="menu-appbar"
+                sx={{ mt: '36px' }}
+                keepMounted
                 anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: 'top',
                   horizontal: 'right',
                 }}
-                keepMounted
                 transformOrigin={{
                   vertical: 'top',
                   horizontal: 'right',
