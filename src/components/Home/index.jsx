@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'
 
-const Home = () => {
+const index = () => {
 	return (
-		<div>Home</div>
+		<div>index</div>
 	)
 }
 
-export default Home;
+export default index;

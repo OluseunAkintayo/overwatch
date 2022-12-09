@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-responsive-modal/styles.css';
 import NewSupply from './components/Store/NewSupply';
 import PrivateRoute from './components/default/PrivateRoute';
+import NewUser from './components/Login/NewUser';
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/new-user" element={<NewUser />} />
         <Route element={<PrivateRoute />}>
           <Route path="/" index element={<Home />} />
           <Route path="/shop" element={<Shop />} />

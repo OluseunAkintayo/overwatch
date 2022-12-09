@@ -6,6 +6,9 @@ import { Button, CircularProgress, Grid, Typography } from '@mui/material';
 import { TextInput } from '../../lib';
 import { customAlphabet } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import CryptoJS from 'crypto-js';
 
 const Login = () => {
 	const navigate = useNavigate();
@@ -35,15 +38,30 @@ const Login = () => {
 	React.useEffect(() => {
 		generateCode();
 	}, []);
-
-	const key = process.env.REACT_APP_ENCRYPTION_KEY;
 	
-	const login = (data) => {
+	const login = async (data) => {
 		setLoading(true);
-		setTimeout(() => {
-			navigate("/");
-			localStorage.setItem('token', id);
-		}, 1500);
+		const response = await axios.get(`/users?username=${data.username}`);
+		if(response?.data?.length === 1) {
+			if(response.data[0].passcode === data.passcode){
+				localStorage.setItem('token', id);
+				setTimeout(() => {
+					navigate("/");
+				}, 1500);
+			} else {
+				if(response.data[0].passcode !== data.passcode) {
+					setTimeout(() => {
+						setLoading(false);
+						toast.error("Incorrect password, please check again.");
+					}, 1500);
+				}
+			}
+		} else if(response?.data?.length === 0) {
+			setTimeout(() => {
+				toast.error("Provided username does not exist");
+				setLoading(false);
+			}, 1000);
+		}
 	}
 
 	return (
@@ -55,7 +73,7 @@ const Login = () => {
 					validateOnChange={false}
 					onSubmit={(values) => { login(values) }}
 				>
-					{({ errors }) => (
+					{() => (
 						<Form>
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
@@ -94,6 +112,6 @@ const Container = styled.div`
 	box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
 	padding: 3rem 1.5rem;
 	width: 100%;
-	max-width: 600px;
+	max-width: 400px;
 	min-width: 300px;
 `;

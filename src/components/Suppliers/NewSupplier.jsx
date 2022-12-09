@@ -131,9 +131,7 @@ const NewSupplier = ({ open, close, refetch }) => {
 								</Grid>
 								<Grid item xs={6}>
 									<Button type="submit" disabled={isLoading} sx={{ height: '57px' }} variant="contained" fullWidth>
-										{
-											isLoading ? <CircularProgress /> : 'add supplier'
-										}
+										{ isLoading ? <CircularProgress /> : 'add supplier' }
 									</Button>
 								</Grid>
 							</Grid>
