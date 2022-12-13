@@ -1,0 +1,190 @@
+{
+  "products": [
+    {
+      "id": "1hyc78fv",
+      "productCode": "57839436",
+      "name": "Lux Singlet",
+      "description": "More description...",
+      "brand": "LUX",
+      "category": "Clothing",
+      "subCategory": "Clothing",
+      "pricing": {
+        "cost": 1800,
+        "price": 3000
+      },
+      "inStock": true,
+      "imgUrl": "url"
+    },
+    {
+      "id": "y3bj9nba",
+      "productCode": "29244248",
+      "name": "Nivea Even & Radiant Lotion 400ML",
+      "description": "Nivea Even & Radiant Lotion 400ML",
+      "brand": "Nivea",
+      "category": "Toiletries",
+      "subcategory": "Body Cream/Lotion",
+      "pricing": {
+        "cost": "2000",
+        "retail": "2800"
+      },
+      "inStock": false,
+      "imgUrl": ""
+    },
+    {
+      "id": "y1lf0euh",
+      "productCode": "67481090",
+      "name": "Infinix Note 10 Pro",
+      "description": "Infinix Note 10 Pro",
+      "brand": "Infinix",
+      "category": "Gadgets",
+      "subcategory": "Mobile Phones",
+      "pricing": {
+        "cost": "90000",
+        "retail": "120000"
+      },
+      "inStock": false,
+      "imgUrl": ""
+    },
+    {
+      "id": "oyhxej26",
+      "productCode": "39701218",
+      "name": "Steel Gas Cylinder - 12kg",
+      "description": "Steel Gas Cylinder - 12kg",
+      "brand": "Steel Co",
+      "category": "Appliances",
+      "subcategory": "Appliances",
+      "pricing": {
+        "cost": "30000",
+        "retail": "40000"
+      },
+      "inStock": false,
+      "imgUrl": ""
+    },
+    {
+      "id": "xg8kf4fz",
+      "productCode": "35563892",
+      "name": "Macbook Pro 13' 2021",
+      "description": "Macbook Pro 13' 2021",
+      "brand": "Apple",
+      "category": "Gadgets",
+      "subcategory": "Laptiops",
+      "pricing": {
+        "cost": "1200000",
+        "retail": "1500000"
+      },
+      "inStock": false,
+      "imgUrl": ""
+    }
+  ],
+  "category": [],
+  "subCategory": [],
+  "brand": [],
+  "suppliers": [
+    {
+      "id": "62dneggk",
+      "companyName": "Henderson Corp",
+      "companyAddress": "Lagos Island, Lagos",
+      "contactPerson": "Sheldon Hunter",
+      "contactEmail": "sheldon@hendersoncorp.com",
+      "contactPhone": "1234567890"
+    },
+    {
+      "id": "hlccyn2a",
+      "companyName": "Reckitt Ltd.",
+      "companyAddress": "Ibadan",
+      "contactPerson": "Reckitt Contact",
+      "contactEmail": "reckitt@reckitt.com",
+      "contactPhone": "1234543210"
+    },
+    {
+      "companyName": "Open Market",
+      "companyAddress": "Open Market",
+      "contactPerson": "Various Contact",
+      "contactEmail": "contact@mail.com",
+      "contactPhone": "98765432100",
+      "id": "5ks6ph3u"
+    }
+  ],
+  "supplies": [
+    {
+      "supplier": "Reckitt Ltd.",
+      "invoiceNumber": "AH378226",
+      "supplyDate": "2022-12-11",
+      "products": [
+        {
+          "id": "4zc0kxph",
+          "name": "Playstation 5 Console",
+          "productCode": "13377499",
+          "description": "Playstation 5 Console",
+          "brand": "Sony",
+          "category": "Electronics",
+          "subcategory": "Video Games",
+          "pricing": {
+            "cost": "350000",
+            "retail": "400000"
+          },
+          "inStock": false,
+          "imgUrl": "",
+          "quantity": 3
+        },
+        {
+          "id": "pyenyrp0",
+          "name": "HP M32F 32'' Monitor",
+          "productCode": "49190301",
+          "description": "HP M32F 32'' Monitor",
+          "brand": "HP",
+          "category": "Electronics",
+          "subcategory": "Computer Electronics",
+          "pricing": {
+            "cost": "175000",
+            "retail": "200000"
+          },
+          "inStock": false,
+          "imgUrl": "",
+          "quantity": 3
+        }
+      ],
+      "invoiceTotal": 1575000,
+      "id": "3m326og4",
+      "createdAt": "2022-12-11T18:03:43.928Z"
+    }
+  ],
+  "orders": [],
+  "sales": [],
+  "users": [
+    {
+      "firstName": "Nick",
+      "lastName": "Michaelson",
+      "email": "nick@overwatch.com",
+      "designation": "Super Admin",
+      "username": "Nicklaus",
+      "passcode": "P@ssword",
+      "id": "1x5ffpllztse3zd4",
+      "created": "2022-12-09T15:28:57.131Z",
+      "lastUpdated": "2022-12-09T15:28:57.131Z"
+    },
+    {
+      "firstName": "Rebecca",
+      "lastName": "Michaelson",
+      "email": "rebecca@overwatch.com",
+      "designation": "Admin",
+      "username": "becks",
+      "passcode": "P@ssword",
+      "id": "987h3pssj4b421kv",
+      "created": "2022-12-09T17:07:42.345Z",
+      "lastUpdated": "2022-12-09T17:07:42.345Z"
+    },
+    {
+      "firstName": "Elijah",
+      "lastName": "Michaelson",
+      "email": "Elijah@mail.com",
+      "designation": "Super Admin",
+      "username": "elijah",
+      "passcode": "P@ssword",
+      "id": "85tecb8eds3ktu7d",
+      "created": "2022-12-09T17:11:31.600Z",
+      "lastUpdated": "2022-12-09T17:11:31.600Z"
+    }
+  ],
+  "designation": []
+}

@@ -100,7 +100,7 @@ const Products = () => {
 						<DataGrid
 							columns={cols}
 							rows={
-								data.sort((a, b) => a.name.localeCompare(b.name)).filter(item => {
+								data.sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
 									if(search.trim() === "") {
 										return item;
 									} else if(item.name.toLowerCase().includes(search.trim().toLowerCase())) {
