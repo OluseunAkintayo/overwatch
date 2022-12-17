@@ -4,12 +4,13 @@ import { Autocomplete, Box, Button, CircularProgress, Grid, IconButton, TextFiel
 import dayjs from 'dayjs';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import axios from 'axios';
-import { useQueries } from '@tanstack/react-query';
 import styled from '@emotion/styled';
 import { Add, Delete, RoomSharp } from '@mui/icons-material';
 import ProductsModal from './ProductsModal';
 import { toast } from 'react-toastify';
 import { customAlphabet } from 'nanoid';
+import { useGetProductsQuery, useEditProductMutation } from '../../redux/api/Products';
+import { useGetVendorsQuery, useNewSupplyMutation } from '../../redux/api/Store';
 
 
 const ProductsTable = styled.div`
@@ -18,6 +19,7 @@ const ProductsTable = styled.div`
 		display: none;
 	}
 `;
+
 const Totals = styled.div`
 	padding: 0.5rem;
 	border: 1px solid rgba(224, 224, 224, 1);
@@ -27,6 +29,8 @@ const Totals = styled.div`
 `;
 
 const NewSupply = () => {
+	const { data: products } = useGetProductsQuery();
+	const { data: suppliers } = useGetVendorsQuery();
 	const [productModal, setProductModal] = React.useState(false);
 	const supplyId = customAlphabet('qwertyuiopasdfghjklzxcvbnm1234567890', 8);
 
@@ -36,6 +40,10 @@ const NewSupply = () => {
 	const [invoiceTotal, setInvoiceTotal] = React.useState(0);
 	const [preparedItems, setPreparedItems] = React.useState(null);
 	const [loading, setLoading] = React.useState(false);
+	const [editProduct] = useEditProductMutation();
+	const [newSupply] = useNewSupplyMutation();
+
+
 	const submit = () => {
 		setLoading(true);
 		if(supply.supplier.trim().length === 0) {
@@ -47,80 +55,31 @@ const NewSupply = () => {
 		} else {
 			setTimeout(async () => {
 				preparedItems.forEach(async (item) => {
-					const config = {
-						url: 'products/' + item.id,
-						method: 'PUT',
-						payload: item
-					};
-					console.log(config);
-					await axios(config);
+					const { id, ...rest } = item;
+					await editProduct({id: item.id, payload: rest});
 				});
-			// 	const supplyPayload = {
-			// 		...supply,
-			// 		invoiceTotal: invoiceTotal,
-			// 		id: supplyId(),
-			// 		createdAt: new Date().toISOString()
-			// 	}
-			// 	const supplyConfig = {
-			// 		url: 'supplies',
-			// 		method: 'POST',
-			// 		data: supplyPayload,
-			// 		createdBy: ''
-			// 	}
-			// 	setLoading(false);
-			// 	const res = await axios(supplyConfig);
-			// 	if(res.status === 201) {
-			// 		setSupply({ supplier: '', invoiceNumber: '', supplyDate: dayjs().format("YYYY-MM-DD"), products: [] });
-			// 		setLoading(false);
-			// 		toast.success("Items posted successfully");
-			// 	}
+				const supplyPayload = {
+					id: supplyId().toUpperCase(),
+					...supply,
+					invoiceTotal: invoiceTotal,
+					createdAt: new Date().toISOString(),
+					user: localStorage.getItem('user') || ''
+				}
+				const res = await newSupply(supplyPayload);
+				console.log(res);
+				setLoading(false);
+				toast.success("Items added to store successfully");
+				if(res.status === 201) {
+					setSupply({ supplier: '', invoiceNumber: '', supplyDate: dayjs().format("YYYY-MM-DD"), products: [] });
+				}
 			}, 2000);
-
 		}
-	}
+	};
 
-	const getProducts = async () => {
-		try {
-			const res = await axios.get("products");
-			if(res.status === 200) {
-				return res.data;
-			}
-		} catch (error) {
-			console.error({error});
-			throw error;
-		}
+	const removeItem = (id) => {
+		const filteredProducts = supply.products.filter(item => item.id !== id);
+		setSupply({ ...supply, products: filteredProducts });
 	}
-
-	const getSuppliers = async () => {
-		try {
-			const res = await axios.get("suppliers");
-			if(res.status === 200) {
-				return res.data;
-			}
-		} catch (error) {
-			console.error({error});
-			throw error;
-		}
-	}
-
-	const [products, suppliers] = useQueries({
-		queries: [
-			{
-				queryKey: ['products'],
-				queryFn: () => getProducts(),
-				keepPreviousData: true,
-				staleTime: 300000,
-				// refetchInterval: 600000
-			},
-			{
-				queryKey: ['suppliers'],
-				queryFn: () => getSuppliers(),
-				keepPreviousData: true,
-				staleTime: 300000,
-				// refetchInterval: 600000
-			},
-		]
-	});
 
 	const cols = [
 		{ field: 'name', headerName: 'Product Name', width: 250 },
@@ -140,7 +99,7 @@ const NewSupply = () => {
 			width: 70,
 			sortable: false,
 			renderCell: (params) => {
-				return <IconButton onClick={() => console.log(params.row)}><Delete /></IconButton>
+				return <IconButton onClick={() => removeItem(params.row.id)}><Delete /></IconButton>
 			}
 		}
 	];
@@ -155,7 +114,7 @@ const NewSupply = () => {
 							<Autocomplete
 								disablePortal
 								id="suppliers-select-box"
-								options={suppliers.data}
+								options={suppliers}
 								getOptionLabel={(option) => option.companyName}
 								onInputChange={(e, val) => {
 									setSupply({ ...supply, supplier: val });

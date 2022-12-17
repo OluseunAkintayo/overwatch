@@ -13,15 +13,14 @@ const ItemModal = ({ open, close, closeParent, item, setSupply, supply }) => {
 	const handleChange = (prop) => e => {
 		setProduct({ ...product, [prop]: e.target.value });
 	}
-	const [expiryDate, setExpiryDate] = React.useState(dayjs().format("DD-MM-YYYY"));
+	const [expiryDate, setExpiryDate] = React.useState(dayjs().format("YYYY-MM-DD"));
 	const handleDateChange = (val) => setExpiryDate(val);
 	
 	const addItem = () => {
 		const newProduct = {
-			...item, quantity: Number(product.qty), pricing: {...item.pricing, cost: product.cost}, expiryDate: expiryDate.$d
+			...item, quantity: Number(product.qty), pricing: {...item.pricing, cost: product.cost}, expiryDate: expiryDate
 		}
 		setSupply({ ...supply, products: [...supply.products, newProduct] })
-		console.log(newProduct);
 		close();
 		closeParent();
 	};
@@ -51,10 +50,10 @@ const ItemModal = ({ open, close, closeParent, item, setSupply, supply }) => {
 						</LocalizationProvider>
 					</Grid>
 					<Grid item xs={6}>
-						<Button variant='contained' fullWidth onClick={addItem}>Add product</Button>
+						<Button sx={{ height: '2.5rem' }} variant='contained' fullWidth onClick={addItem}>Add product</Button>
 					</Grid>
 					<Grid item xs={6}>
-						<Button variant='outlined' fullWidth onClick={close}>Cancel</Button>
+						<Button sx={{ height: '2.5rem' }} variant='outlined' fullWidth onClick={close}>Cancel</Button>
 					</Grid>
 				</Grid>
 			</Box>

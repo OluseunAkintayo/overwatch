@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import * as Yup from 'yup';
 import { customAlphabet } from 'nanoid';
 import axios from 'axios';
+import { useNewVendorMutation } from '../../redux/api/Store';
 
 const ModalBody = styled.div`
 	padding: 1rem;
@@ -26,16 +27,10 @@ const FormTitle = styled.h2`
 	color: rgba(0, 0, 0, 0.87);
 `;
 
-const NewSupplier = ({ open, close, refetch }) => {
-	const [id, setId] = React.useState('');
-	const generateCode = () => {
-		const nanoid = customAlphabet('1234567890', 8);
-		const sId = nanoid();
-		setId(sId);
-	}
+const NewVendor = ({ open, close, refetch }) => {
+	const [newVendor] = useNewVendorMutation();
 
 	const initialValue = {
-		supplierId: id,
 		companyName: '',
 		companyAddress: '',
 		contactPerson: '',
@@ -44,7 +39,6 @@ const NewSupplier = ({ open, close, refetch }) => {
 	};
 
 	const validate = Yup.object().shape({
-		supplierId: Yup.string().trim().required('Required'),
 		companyName: Yup.string().trim().required('Required'),
 		companyAddress: Yup.string().trim().required('Required'),
 		contactPerson: Yup.string().trim().required('Required'),
@@ -52,13 +46,13 @@ const NewSupplier = ({ open, close, refetch }) => {
 		contactPhone: Yup.number().typeError('Price must be a number').required('Required'),
 	});
 
-	const supplierId = customAlphabet('qwertyuiopasdfghjklzxcvbnm1234567890', 8);
+	const vendorId = customAlphabet('qwertyuiopasdfghjklzxcvbnm1234567890', 8);
 	const [isLoading, setIsLoading] = React.useState(false);
 
 	const submitForm = async (data) => {
 		setIsLoading(true);
 		const payload = {
-			id: supplierId(),
+			id: vendorId(),
 			companyName: data.companyName,
 			companyAddress: data.companyAddress,
 			contactPerson: data.contactPerson,
@@ -66,26 +60,24 @@ const NewSupplier = ({ open, close, refetch }) => {
 			contactPhone: data.contactPhone,
 		}
 
-		const config = {
-			url: 'suppliers',
-			method: 'POST',
-			data: payload
-		}
-
 		try {
-			const res = await axios(config);
-			if(res.status === 201) {
+			const res = await newVendor(payload);
+			console.log(res);
+			if(res.data) {
 				setTimeout(() => {
 					setIsLoading(false);
-					toast.success("Supplier added successfully!");
+					toast.success("Vendor added successfully!");
 					refetch();
 					close();
-				}, 1500)
+				}, 2000);
+			} else {
+				setIsLoading(false);
+				toast.warn("Error adding vendor!");
 			}
 		} catch (error) {
 			console.error({error});
 			setIsLoading(false);
-			toast.error("Error adding supplier! Try again");
+			toast.error("Error adding vendor! Try again");
 		}
 	}
 
@@ -93,7 +85,7 @@ const NewSupplier = ({ open, close, refetch }) => {
 		<ModalWrapper open={open} close={close}  modalClass={'newProductModal'}>
 			<ModalBody>
 				<FormHeader>
-					<FormTitle>New Supplier</FormTitle>
+					<FormTitle>New Vendor</FormTitle>
 				</FormHeader>
 				<Formik
 					enableReinitialize
@@ -106,13 +98,7 @@ const NewSupplier = ({ open, close, refetch }) => {
 						<Form>
 							<Grid container spacing={3} marginTop="0" alignItems="flex-start">
 								<Grid item xs={12}>
-									<Box sx={{ display: 'flex', gap: '1rem' }}>
-										<TextInput name="supplierId" label="Supplier Code" />
-										<Button type="button" variant="outlined" onClick={generateCode} sx={{ height: '52.7px'}}>Generate</Button>
-									</Box>
-								</Grid>
-								<Grid item xs={12}>
-									<TextInput name="companyName" label="Supplier Name" />
+									<TextInput name="companyName" label="Vendor Name" />
 								</Grid>
 								<Grid item xs={12}>
 									<TextInput name="companyAddress" label="Company Address" multiline rows={3} />
@@ -127,12 +113,12 @@ const NewSupplier = ({ open, close, refetch }) => {
 									<TextInput name="contactPhone" label="Contact Phone" />
 								</Grid>
 								<Grid item xs={6}>
-									<Button disabled={isLoading} type="button" onClick={close} sx={{ height: '57px' }} variant="outlined" fullWidth>Close</Button>
+									<Button type="submit" disabled={isLoading} sx={{ height: '57px' }} variant="contained" fullWidth>
+										{ isLoading ? <CircularProgress /> : 'add vendor' }
+									</Button>
 								</Grid>
 								<Grid item xs={6}>
-									<Button type="submit" disabled={isLoading} sx={{ height: '57px' }} variant="contained" fullWidth>
-										{ isLoading ? <CircularProgress /> : 'add supplier' }
-									</Button>
+									<Button disabled={isLoading} type="button" onClick={close} sx={{ height: '57px' }} variant="outlined" fullWidth>Close</Button>
 								</Grid>
 							</Grid>
 							<FormikErrorFocus
@@ -150,4 +136,4 @@ const NewSupplier = ({ open, close, refetch }) => {
 	)
 }
 
-export default NewSupplier;
+export default NewVendor;

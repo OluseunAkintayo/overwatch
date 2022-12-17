@@ -18,7 +18,9 @@ const ProductsModal = ({ open, close, products, setSupply, supply }) => {
 	const [itemModal, setItemModal] = React.useState(false);
 	const cols = [
 		{ field: 'productCode', headerName: 'Product Code', width: 100 },
-		{ field: 'name', headerName: 'Product Name', width: 250 },
+		{ field: 'name', headerName: 'Product Name', width: 250,
+			renderCell: (params) => <span>{params.row.name}</span>
+		},
 		{
 			field: 'costPrice', headerName: 'Cost', width: 120,
 			renderCell: (params) => {
@@ -36,7 +38,7 @@ const ProductsModal = ({ open, close, products, setSupply, supply }) => {
 		}
 	];
 
-	const addProduct = product => {
+	const addProduct = (product) => {
 		setItem(product);
 		setItemModal(true);
 	}
@@ -46,27 +48,20 @@ const ProductsModal = ({ open, close, products, setSupply, supply }) => {
 			<ModalTitle title="Select Product" />
 			<TextField label="Search" value={search} onChange={e => setSearch(e.target.value)} />
 			<DataTable>
-				{
-					products.isLoading ?
-					<Box sx={{ height: '20vh', display: 'grid', placeItems: 'center' }}><CircularProgress size="5rem" /></Box> :
-					(
-						products.error ? <Box sx={{ height: '50vh', display: 'grid', placeItems: 'center' }}><Typography color="error">Error loading products<br />{products?.error?.stack}</Typography></Box> :
-						<DataGrid
-							columns={cols}
-							rows={
-								products?.data?.sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
-									if(search.trim() === "") {
-										return item;
-									} else if(item.name.toLowerCase().includes(search.trim().toLowerCase())) {
-										return item;
-									} else if(item.productCode.toLowerCase().includes(search.trim().toLowerCase())) {
-										return item;
-									}
-								})
+				<DataGrid
+					columns={cols}
+					rows={
+						[...products].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
+							if(search.trim() === "") {
+								return item;
+							} else if(item.name.toLowerCase().includes(search.trim().toLowerCase())) {
+								return item;
+							} else if(item.productCode.toLowerCase().includes(search.trim().toLowerCase())) {
+								return item;
 							}
-						/>
-					)
-				}
+						})
+					}
+				/>
 			</DataTable>
 			<React.Fragment>
 				{ itemModal && <ItemModal open={itemModal} close={() => setItemModal()} closeParent={close} item={item} supply={supply} setSupply={setSupply} /> }

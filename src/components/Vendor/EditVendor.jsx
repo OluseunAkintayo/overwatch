@@ -3,11 +3,10 @@ import { toast } from 'react-toastify'
 import { TextInput, ModalWrapper } from '../../lib';
 import { Formik, Form } from 'formik';
 import FormikErrorFocus from 'formik-error-focus';
-import { Box, Button, CircularProgress, Grid } from '@mui/material';
+import { Button, CircularProgress, Grid } from '@mui/material';
 import styled from '@emotion/styled';
 import * as Yup from 'yup';
-import { customAlphabet } from 'nanoid';
-import axios from 'axios';
+import { useEditVendorMutation } from '../../redux/api/Store';
 
 const ModalBody = styled.div`
 	padding: 1rem;
@@ -22,23 +21,23 @@ const FormHeader = styled.div`
 const FormTitle = styled.h2`
 	font-weight: 900;
 	font-size: 1.25rem;
-	/* color: #333333; */
 	color: rgba(0, 0, 0, 0.87);
 `;
 
-const EditSupplier = ({ open, close, refetch, supplierData }) => {
-
+const EditVendor = ({ open, close, refetch, vendor }) => {
+	const [editVendor] = useEditVendorMutation();
+	
 	const initialValue = {
-		supplierId: supplierData.id,
-		companyName: supplierData.companyName,
-		companyAddress: supplierData.companyAddress,
-		contactPerson: supplierData.contactPerson,
-		contactEmail: supplierData.contactEmail,
-		contactPhone: supplierData.contactPhone,
+		vendorId: vendor.id,
+		companyName: vendor.companyName,
+		companyAddress: vendor.companyAddress,
+		contactPerson: vendor.contactPerson,
+		contactEmail: vendor.contactEmail,
+		contactPhone: vendor.contactPhone,
 	};
 
 	const validate = Yup.object().shape({
-		supplierId: Yup.string().trim().required('Required'),
+		vendorId: Yup.string().trim().required('Required'),
 		companyName: Yup.string().trim().required('Required'),
 		companyAddress: Yup.string().trim().required('Required'),
 		contactPerson: Yup.string().trim().required('Required'),
@@ -58,26 +57,23 @@ const EditSupplier = ({ open, close, refetch, supplierData }) => {
 			contactPhone: data.contactPhone,
 		}
 
-		const config = {
-			url: `suppliers/${supplierData.id}`,
-			method: 'PUT',
-			data: payload
-		}
-
 		try {
-			const res = await axios(config);
-			if(res.status === 200) {
+			const res = await editVendor({ id: vendor.id, payload });
+			if(res.data) {
 				setTimeout(() => {
 					setIsLoading(false);
-					toast.success("Supplier saved successfully!");
+					toast.success("Vendor saved successfully!");
 					refetch();
 					close();
 				}, 1500)
+			} else {
+				setIsLoading(false);
+				toast.error("Error adding vendor! Try again");
 			}
 		} catch (error) {
 			console.error({error});
 			setIsLoading(false);
-			toast.error("Error adding supplier! Try again");
+			toast.error("Error adding vendor! Try again");
 		}
 	}
 
@@ -85,7 +81,7 @@ const EditSupplier = ({ open, close, refetch, supplierData }) => {
 		<ModalWrapper open={open} close={close}  modalClass={'newProductModal'}>
 			<ModalBody>
 				<FormHeader>
-					<FormTitle>Edit Supplier - {supplierData.companyName}</FormTitle>
+					<FormTitle>Edit Vendor - {vendor.companyName}</FormTitle>
 				</FormHeader>
 				<Formik
 					enableReinitialize
@@ -98,10 +94,7 @@ const EditSupplier = ({ open, close, refetch, supplierData }) => {
 						<Form>
 							<Grid container spacing={3} marginTop="0" alignItems="flex-start">
 								<Grid item xs={12}>
-									<TextInput name="supplierId" label="Supplier Code" />
-								</Grid>
-								<Grid item xs={12}>
-									<TextInput name="companyName" label="Supplier Name" />
+									<TextInput name="companyName" label="Vendor Name" />
 								</Grid>
 								<Grid item xs={12}>
 									<TextInput name="companyAddress" label="Company Address" multiline rows={3} />
@@ -116,14 +109,12 @@ const EditSupplier = ({ open, close, refetch, supplierData }) => {
 									<TextInput name="contactPhone" label="Contact Phone" />
 								</Grid>
 								<Grid item xs={6}>
-									<Button disabled={isLoading} type="button" onClick={close} sx={{ height: '57px' }} variant="outlined" fullWidth>Close</Button>
+									<Button type="submit" disabled={isLoading} sx={{ height: '57px' }} variant="contained" fullWidth>
+										{ isLoading ? <CircularProgress /> : 'save' }
+									</Button>
 								</Grid>
 								<Grid item xs={6}>
-									<Button type="submit" disabled={isLoading} sx={{ height: '57px' }} variant="contained" fullWidth>
-										{
-											isLoading ? <CircularProgress /> : 'save'
-										}
-									</Button>
+									<Button disabled={isLoading} type="button" onClick={close} sx={{ height: '57px' }} variant="outlined" fullWidth>Close</Button>
 								</Grid>
 							</Grid>
 							<FormikErrorFocus
@@ -141,4 +132,4 @@ const EditSupplier = ({ open, close, refetch, supplierData }) => {
 	)
 }
 
-export default EditSupplier;
+export default EditVendor;

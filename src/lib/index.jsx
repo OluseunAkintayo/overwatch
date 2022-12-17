@@ -43,9 +43,7 @@ export const Check = ({ name, label, legend, ...others }) => {
 export const SelectMenu = ({ name, options, ...props }) => {
 	const { setFieldValue } = useFormikContext();
 	const [field, meta] = useField(name);
-	const handleChange = e => {
-		setFieldValue(name, e.target.value);
-	}
+	const handleChange = e => setFieldValue(name, e.target.value);
 
 	const config = {
 		...field,
@@ -63,7 +61,7 @@ export const SelectMenu = ({ name, options, ...props }) => {
 	return <TextField {...config}>
 		{
 			options.map(item => (
-				<MenuItem key={item.value} value={item.value}>{item.name}</MenuItem>
+				<MenuItem key={item.id} value={item.value}>{item.name}</MenuItem>
 			))
 		}
 	</TextField>

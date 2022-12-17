@@ -4,7 +4,8 @@ import './index.css';
 import App from './App';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import axios from 'axios';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Provider } from 'react-redux';
+import store from './redux';
 
 const theme = createTheme({
   palette: {
@@ -46,16 +47,14 @@ const theme = createTheme({
 axios.defaults.headers.post['Content-Type'] ='application/json';
 axios.defaults.baseURL = 'http://localhost:5000/api/v1/';
 
-const queryClient = new QueryClient();
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
           <App />
-        </QueryClientProvider>
+        </Provider>
       </ThemeProvider>
   </React.StrictMode>
 );

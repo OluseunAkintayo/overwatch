@@ -22,3 +22,11 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 750px !important;
   border-radius: 0.25rem !important;
 }
+
+.deleteModal {
+  /* max-height: 50vh; */
+  overflow-y: auto;
+  width: 100%;
+  max-width: 400px !important;
+  border-radius: 0.25rem !important;
+}
