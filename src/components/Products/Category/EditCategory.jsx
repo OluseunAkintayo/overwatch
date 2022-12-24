@@ -25,13 +25,14 @@ const EditCategory = ({ open, close, refetch, category }) => {
 		const payload = {
 			name: data.name,
 			description: data.description,
+			isActive: category.isActive,
 			createdAt: category.createdAt,
 			modifiedAt: new Date().toISOString()
 		};
 
 		try {
-			const response = await editCategory({id: category.id, payload: payload});
-			if(response.data) {
+			const response = await editCategory({id: category._id, payload: payload});
+			if(response.data.status === 1) {
 				toast.success("Product category updated successfully");
 				refetch();
 				close();

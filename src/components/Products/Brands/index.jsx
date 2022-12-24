@@ -45,8 +45,11 @@ const Brands = () => {
 	}
 
 	const cols = [
-		{ field: 'name', headerName: 'Brand Name', width: 250 },
+		{ field: 'name', headerName: 'Brand Name', width: 200 },
 		{ field: 'manufacturer', headerName: 'Brand Manufacturer', width: 200 },
+		{ field: 'status', headerName: 'Status', width: 100,
+			renderCell: (params) => <>{params.row.isActive ? "Active" : "Inactive"}</>
+		},
 		{
 			field: 'action',
 			headerName: 'Action',
@@ -103,8 +106,9 @@ const Brands = () => {
 							data &&
 							<DataGrid
 							columns={cols}
+							getRowId={(row) => row._id}
 							rows={
-								[...data].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
+								[...data.data].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
 									if(search.trim() === "") {
 										return item;
 									} else if(item.name.toLowerCase().includes(search.trim().toLowerCase())) {

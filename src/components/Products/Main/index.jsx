@@ -74,6 +74,7 @@ const Products = () => {
 	
 	const response = useGetProductsQuery();
 	const { isLoading, data, refetch, isError, error } = response;
+	const products = data?.data;
 	
 	const [product, setProduct] = React.useState(null);
 	const[editModal, setEditModal] = React.useState(false);
@@ -96,6 +97,9 @@ const Products = () => {
 		},
 		{ field: 'price', headerName: 'Price', width: 120,
 			renderCell: (params) => Number(params.row.pricing.retail).toLocaleString()
+		},
+		{ field: 'status', headerName: 'Status', width: 120,
+			renderCell: (params) => <>{params.row.isActive ? "Active" : "Inactive"}</>
 		},
 		{
 			field: 'action',
@@ -133,27 +137,27 @@ const Products = () => {
 	const { data: categories, refetch: categoriesRefetch } = useGetCateoriesQuery();
 	const { data: subcategories } = useGetSubcateoriesQuery();
 
-	const brandsData = brands?.map(item => {
+	const brandsData = brands?.data?.map(item => {
 		return {
 			name: item.name,
 			value: item.name,
-			id: item.id
+			id: item._id
 		}
 	}).sort((a, b) => a.name.localeCompare(b.name));
 
-	const categoriesData = categories?.map(item => {
+	const categoriesData = categories?.data?.map(item => {
 		return {
 			name: item.name,
 			value: item.name,
-			id: item.id
+			id: item._id
 		}
 	}).sort((a, b) => a.name.localeCompare(b.name));
 
-	const subcategoriesData = subcategories?.map(item => {
+	const subcategoriesData = subcategories?.data?.map(item => {
 		return {
 			name: item.name,
 			value: item.name,
-			id: item.id
+			id: item._id
 		}
 	}).sort((a, b) => a.name.localeCompare(b.name));
 
@@ -161,7 +165,7 @@ const Products = () => {
 		<React.Fragment>
 			<Container>
 				<TopBar>
-					<TextField variant='outlined' label="Search" name="search" onChange={handleChange} />
+					<TextField autoFocus variant='outlined' size="small" label="Search" name="search" onChange={handleChange} />
 					<Box className='action-menu'>
 						<Button className='action-btn' variant='outlined' sx={{ width: '100%' }} onClick={toggle}>
 							<Add />
@@ -185,18 +189,17 @@ const Products = () => {
 							<Box sx={{ height: '50vh', display: 'grid', placeItems: 'center' }}>
 								<Typography variant='h5' color="error">{error?.status} Error</Typography>
 							</Box> :
-							data &&
+							products &&
 							<DataGrid
 							columns={cols}
+							getRowId={row => row._id}
 							rows={
-								[...data].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
+								[...products].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
 									if(search.trim() === "") {
 										return item;
-									} else if(item.name.toLowerCase().includes(search.trim().toLowerCase())) {
+									} else if(item.name?.toLowerCase().includes(search.trim().toLowerCase())) {
 										return item;
-									} else if(item.productCode.toLowerCase().includes(search.trim().toLowerCase())) {
-										return item;
-									} else if(item.brand.toLowerCase().includes(search.trim().toLowerCase())) {
+									} else if(item.brand?.toLowerCase().includes(search.trim().toLowerCase())) {
 										return item;
 									}
 								})

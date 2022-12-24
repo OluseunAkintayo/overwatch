@@ -25,12 +25,13 @@ const EditBrand = ({ open, close, refetch, brand }) => {
 		const payload = {
 			name: data.name,
 			manufacturer: data.manufacturer,
+			isActive: brand.isActive,
 			createdAt: brand.createdAt,
 			modifiedAt: new Date().toISOString()
 		};
 
 		try {
-			const response = await editProduct({id: brand.id, payload: payload});
+			const response = await editProduct({ id: brand._id, payload: payload });
 			if(response.data) {
 				toast.success("Brand updated successfully");
 				refetch();

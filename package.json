@@ -34,7 +34,7 @@
   "scripts": {
     "start-client": "react-scripts start",
     "start-db": "json-server --watch db.json --routes routes.json --port 5000",
-    "start": "concurrently \"yarn run start-client\" \"yarn run start-db\"",
+    "start": "concurrently \"yarn run start-client -P 3005\" \"yarn run start-db\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

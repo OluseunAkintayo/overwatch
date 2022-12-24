@@ -5,7 +5,8 @@ const token = localStorage.getItem('token') !== 'undefined' ? localStorage.getIt
 export const ProductsApi = createApi({
 	reducerPath: 'products',
 	baseQuery: fetchBaseQuery({
-		baseUrl: process.env.REACT_APP_DEV_URL,
+		// baseUrl: "https://overwatch-backend.azurewebsites.net/api/",
+		baseUrl: process.env.REACT_APP_BACKEND_URL,
 		// prepareHeaders: (headers) => {
 		// 	if(token) {
 		// 		headers.set('authorization', `Bearer ${token}`);
@@ -18,20 +19,20 @@ export const ProductsApi = createApi({
 	refetchOnReconnect: true,
 	endpoints: (build) => ({
 		getProducts: build.query({
-			query: () => 'products',
+			query: () => 'products/list',
 			keepUnusedDataFor: 600,
 			extraOptions: { maxRetries: 2 }
 		}),
 		newProduct: build.mutation({
 			query: (data) => ({
-				url: 'products',
+				url: 'products/new',
 				method: 'POST',
 				body: data
 			}),
 		}),
 		editProduct: build.mutation({
 			query: (ctx) => ({
-				url: `products/${ctx.id}`,
+				url: `products/update/${ctx.id}`,
 				method: 'PUT',
 				body: ctx.payload
 			}),

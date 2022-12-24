@@ -5,32 +5,33 @@ const token = localStorage.getItem('token') !== 'undefined' ? localStorage.getIt
 export const BrandsApi = createApi({
 	reducerPath: 'brands',
 	baseQuery: fetchBaseQuery({
-		baseUrl: process.env.REACT_APP_DEV_URL,
+		baseUrl: process.env.REACT_APP_BACKEND_URL,
+		// baseUrl: process.env.REACT_APP_DEV_URL,
 	}),
 	refetchOnReconnect: true,
 	endpoints: (build) => ({
 		getBrands: build.query({
-			query: () => 'brands',
+			query: () => 'products/brands/list',
 			keepUnusedDataFor: 600,
 			extraOptions: { maxRetries: 2 }
 		}),
 		newBrand: build.mutation({
 			query: (data) => ({
-				url: 'brands',
+				url: 'products/brands/new',
 				method: 'POST',
 				body: data
 			}),
 		}),
 		editBrand: build.mutation({
 			query: (ctx) => ({
-				url: `brands/${ctx.id}`,
+				url: `products/brands/update/${ctx.id}`,
 				method: 'PUT',
 				body: ctx.payload
 			}),
 		}),
 		deleteBrand: build.mutation({
 			query: (id) => ({
-				url: `brands/${id}`,
+				url: `products/brands/delete/${id}`,
 				method: 'DELETE'
 			}),
 		}),

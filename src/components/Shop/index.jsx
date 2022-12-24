@@ -23,7 +23,7 @@ const DataTable = styled.div`
 const Shop = () => {
 	const [cartModal, setCartModal] = React.useState(false);
 
-	const { isLoading, isError, error, data, refetch } = useGetProductsQuery();
+	const { isLoading, isError, error, data: products, refetch } = useGetProductsQuery();
 
 	const [cart, setCart] = React.useState(() => localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
 
@@ -31,7 +31,7 @@ const Shop = () => {
 	cart.forEach(item => tempCart.push(item));
 
 	const addToCart = (product) => {
-		const cartItem = tempCart.find(item => item.id === product.id);
+		const cartItem = tempCart.find(item => item._id === product._id);
 		const cartItemIndex = tempCart.indexOf(cartItem);
 
 		if(!cartItem) {
@@ -41,6 +41,7 @@ const Shop = () => {
 				let addedItem = { ...product, added: 1 };
 				tempCart = [...cart, addedItem];
 				setCart(tempCart);
+				localStorage.setItem('cart', JSON.stringify(tempCart));
 			}
 		} else if(cartItem) {
 			if(cartItem.added === cartItem.quantity) {
@@ -49,6 +50,7 @@ const Shop = () => {
 				const newItem = { ...cartItem, added: cartItem.added + 1 };
 				tempCart[cartItemIndex] = newItem;
 				setCart(tempCart);
+				localStorage.setItem('cart', JSON.stringify(tempCart));
 			}
 		}
 	}
@@ -58,6 +60,10 @@ const Shop = () => {
 		{ field: 'name', headerName: 'Product Name', width: 250 },
 		{ 
 			field: 'quantity', headerName: 'Quantity', width: 120,
+		},
+		{ 
+			field: 'price', headerName: 'Price', width: 120,
+			renderCell: params => Number(params.row.pricing.retail).toLocaleString()
 		},
 		{ field: 'category', headerName: 'Product Category', width: 120 },
 		{
@@ -69,7 +75,7 @@ const Shop = () => {
 				return <Button onClick={() => addToCart(params.row)}>add</Button>
 			}
 		}
-	]
+	];
 	
 	React.useEffect(() => {
 		document.title = "Shop: Overwatch";
@@ -79,15 +85,38 @@ const Shop = () => {
 	const [search, setSearch] = React.useState('');
 	const handleChange = e => setSearch(e.target.value);
 
+	const [count, setCount] = React.useState(0);
+
+	React.useEffect(() => {
+		let totalCount = 0;
+		cart.forEach(item => {
+			totalCount += item.added;
+		});
+		setCount(totalCount);
+	}, [cart]);
+
+
 	return (
 		<React.Fragment>
 			<Container>
 				<TopBar>
-					<TextField variant='outlined' label="Search" name="search" onChange={handleChange} />
-					<Button variant='outlined' onClick={() => setCartModal(true)}>
-						<ShoppingCartCheckoutOutlined />
-						<span style={{ marginLeft: '0.25rem' }}>checkout</span>
-					</Button>
+					<TextField size="small" variant='outlined' label="Search" name="search" onChange={handleChange} />
+					<Box onClick={() => setCartModal(true)} sx={{ position: 'relative', left: -15, cursor: 'pointer' }}>
+						<ShoppingCartCheckoutOutlined sx={{ color: 'teal' }} />
+						<span style={{
+							position: 'absolute',
+							top: '-30%',
+							right: '-80%',
+							fontSize: 10,
+							backgroundColor: 'teal',
+							color: '#FFFFFF',
+							height: '1.25rem',
+							width: '1.25rem',
+							borderRadius: '50%',
+							display: 'grid',
+							placeItems: 'center'
+						}}>{count}</span>
+					</Box>
 				</TopBar>
 				<DataTable>
 					{
@@ -96,8 +125,9 @@ const Shop = () => {
 							isError ? <Box sx={{ height: '50vh', display: 'grid', placeItems: 'center' }}><Typography variant="h5" color="error">Error {error?.status}: Loading products failed</Typography></Box> :
 							<DataGrid
 								columns={cols}
+								getRowId={(row) => row._id}
 								rows={
-									[...data].filter(item => item.quantity)
+									[...products.data].filter(item => item.quantity).filter(item => item.isActive)
 										.sort((a, b) => a.name.localeCompare(b.name)).filter(item => {
 										if(search.trim() === "") {
 											return item;
@@ -117,7 +147,7 @@ const Shop = () => {
 			</Container>
 			<React.Fragment>
 				{
-					cartModal && <Cart open={cartModal} close={() => setCartModal(false)} refetch={refetch} cart={cart} />
+					cartModal && <Cart open={cartModal} close={() => setCartModal(false)} refetch={refetch} cart={cart} setCart={setCart} />
 				}
 			</React.Fragment>
 		</React.Fragment>

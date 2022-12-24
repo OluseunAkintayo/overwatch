@@ -47,6 +47,9 @@ const Category = () => {
 	const cols = [
 		{ field: 'name', headerName: 'Product Category', width: 250 },
 		{ field: 'description', headerName: 'Description', width: 200 },
+		{ field: 'status', headerName: 'Status', width: 100,
+			renderCell: (params) => <>{ params.row.isActive ? "Active" : "Inactive" }</>
+		},
 		{
 			field: 'action',
 			headerName: 'Action',
@@ -71,7 +74,7 @@ const Category = () => {
 	];
 	
 	React.useEffect(() => {
-		document.title = "Brands: Overwatch";
+		document.title = "Categories: Overwatch";
 		return () => null;
 	}, []);
 
@@ -102,8 +105,9 @@ const Category = () => {
 							data &&
 							<DataGrid
 							columns={cols}
+							getRowId={(row) => row._id}
 							rows={
-								[...data].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
+								[...data.data].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
 									if(search.trim() === "") {
 										return item;
 									} else if(item.name.toLowerCase().includes(search.trim().toLowerCase())) {

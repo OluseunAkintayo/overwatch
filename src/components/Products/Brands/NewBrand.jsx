@@ -21,15 +21,13 @@ const NewBrand = ({ open, close, refetch }) => {
 		manufacturer: Yup.string().trim().required('Required'),
 	});
 	
-	const brandId = customAlphabet('qwertyuiopasdfghjklzxcvbnm1234567890', 8);
-	
 	const [newProduct, { isLoading, isError }] = useNewBrandMutation();
 
 	const submitForm = async (data) => {
 		const payload = {
-			id: brandId(),
 			name: data.name,
 			manufacturer: data.manufacturer,
+			isActive: true,
 			createdAt: new Date().toISOString(),
 			modifiedAt: new Date().toISOString()
 		}

@@ -24,7 +24,7 @@
       "subcategory": "Laptiops",
       "pricing": {
         "cost": "1200000",
-        "retail": "1500000"
+        "retail": "149999.99"
       },
       "inStock": false,
       "imgUrl": "",
@@ -56,7 +56,7 @@
       "subcategory": "Software",
       "pricing": {
         "cost": "20000",
-        "retail": "28000"
+        "retail": "27999.99"
       },
       "inStock": false,
       "imgUrl": "",
@@ -197,6 +197,20 @@
       "createdAt": "2022-12-16T15:59:42.917Z",
       "modifiedAt": "2022-12-16T16:00:12.268Z",
       "id": "sa5opnpp"
+    },
+    {
+      "id": "7751ud8d",
+      "name": "Mobile Phones",
+      "description": "Mobile Phones",
+      "createdAt": "2022-12-24T12:02:19.546Z",
+      "modifiedAt": "2022-12-24T12:02:19.546Z"
+    },
+    {
+      "id": "05u6xiwy",
+      "name": "Printers",
+      "description": "Printers",
+      "createdAt": "2022-12-24T12:06:14.207Z",
+      "modifiedAt": "2022-12-24T12:06:14.207Z"
     }
   ],
   "subcategory": [
@@ -286,6 +300,20 @@
       "manufacturer": "ScanDisk",
       "createdAt": "2022-12-17T18:50:38.318Z",
       "modifiedAt": "2022-12-17T18:50:38.318Z"
+    },
+    {
+      "id": "lgqqb6mb",
+      "name": "Epson",
+      "manufacturer": "Epson",
+      "createdAt": "2022-12-24T12:06:47.118Z",
+      "modifiedAt": "2022-12-24T12:06:47.118Z"
+    },
+    {
+      "id": "buage1km",
+      "name": "Generic",
+      "manufacturer": "Generic",
+      "createdAt": "2022-12-24T12:51:51.501Z",
+      "modifiedAt": "2022-12-24T12:51:51.501Z"
     }
   ],
   "suppliers": [

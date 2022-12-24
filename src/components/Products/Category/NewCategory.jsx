@@ -18,15 +18,13 @@ const NewCategory = ({ open, close, refetch }) => {
 		description: Yup.string().trim().required('Required'),
 	});
 	
-	const categoryId = customAlphabet('qwertyuiopasdfghjklzxcvbnm1234567890', 8);
-	
 	const [newCategory, { isLoading, isError }] = useNewCategoryMutation();
 
 	const submitForm = async (data) => {
 		const payload = {
-			id: categoryId(),
 			name: data.name,
 			description: data.description,
+			isActive: true,
 			createdAt: new Date().toISOString(),
 			modifiedAt: new Date().toISOString()
 		}

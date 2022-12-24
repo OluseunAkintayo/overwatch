@@ -7,17 +7,18 @@ import { WarningAmber } from '@mui/icons-material';
 
 
 const DeleteBrand = ({ open, close, refetch, brand }) => {
-	const [deleteBrand, { isLoading, isError }] = useDeleteBrandMutation();
+	const [deleteBrand, { isLoading, error }] = useDeleteBrandMutation();
 
 	const deleteItem = async (data) => {
 		try {
-			const response = await deleteBrand(brand.id);
-			if(response.data) {
+			const response = await deleteBrand(brand._id);
+			console.log(response)
+			if(response.data.status === 1) {
 				toast.success("Brand deleted successfully");
 				refetch();
 				close();
-			} else if(isError || !data) {
-				toast.error("Error deleting brand");
+			} else if(error) {
+				toast.error("Error " + response.error.status + ": unable to delete brand");
 			}
 		} catch (error) {
 			console.log(error);
@@ -46,7 +47,7 @@ const DeleteBrand = ({ open, close, refetch, brand }) => {
 							</Grid>
 							<Grid item xs={6}>
 								<Button type="submit" disabled={isLoading} sx={{ height: '2.5rem', backgroundColor: 'red' }} variant="contained" fullWidth onClick={deleteItem}>
-									{ isLoading ? <CircularProgress /> : 'delete product'	}
+									{ isLoading ? <CircularProgress /> : 'delete brand'	}
 								</Button>
 							</Grid>
 						</Grid>

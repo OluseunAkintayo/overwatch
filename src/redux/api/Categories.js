@@ -5,25 +5,26 @@ const token = localStorage.getItem('token') !== 'undefined' ? localStorage.getIt
 export const CategoriesApi = createApi({
 	reducerPath: 'category',
 	baseQuery: fetchBaseQuery({
-		baseUrl: process.env.REACT_APP_DEV_URL,
+		baseUrl: process.env.REACT_APP_BACKEND_URL + "products",
+		// baseUrl: process.env.REACT_APP_DEV_URL,
 	}),
 	refetchOnReconnect: true,
 	endpoints: (build) => ({
 		getCateories: build.query({
-			query: () => 'category',
+			query: () => 'categories/list',
 			keepUnusedDataFor: 600,
 			extraOptions: { maxRetries: 2 }
 		}),
 		newCategory: build.mutation({
 			query: (data) => ({
-				url: 'category',
+				url: 'categories/new',
 				method: 'POST',
 				body: data
 			}),
 		}),
 		editCategory: build.mutation({
 			query: (ctx) => ({
-				url: `category/${ctx.id}`,
+				url: `categories/update/${ctx.id}`,
 				method: 'PUT',
 				body: ctx.payload
 			}),

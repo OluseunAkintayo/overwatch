@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 import { TextInput, ModalWrapper, ModalTitle, ModalBody } from '../../../lib';
 import { Formik, Form } from 'formik';
 import FormikErrorFocus from 'formik-error-focus';
-import { Box, Button, CircularProgress, Grid } from '@mui/material';
+import { Box, Button, CircularProgress, FormControlLabel, Grid, Switch } from '@mui/material';
 import * as Yup from 'yup';
 import { customAlphabet } from 'nanoid';
 import { useEditProductMutation } from '../../../redux/api/Products';
@@ -16,6 +16,9 @@ const EditProduct = ({ open, close, refetch, product }) => {
 		const pid = nanoid();
 		setId(pid);
 	}
+
+	const [isActive, setIsActive] = React.useState(!product.isActive ? false : true);
+	const onActiveChange = (e) => setIsActive(e.target.checked);
 	
 	const initialValue = {
 		productCode: product.productCode || id,
@@ -25,7 +28,8 @@ const EditProduct = ({ open, close, refetch, product }) => {
 		category: product.category,
 		subcategory: product.subcategory,
 		costPrice: product.pricing.cost,
-		retailPrice: product.pricing.retail
+		retailPrice: product.pricing.retail,
+		isActive: product.isActive ? product.isActive : false
 	};
 	
 	const validate = Yup.object().shape({
@@ -34,7 +38,7 @@ const EditProduct = ({ open, close, refetch, product }) => {
 		description: Yup.string().trim().required('Required'),
 		brand: Yup.string().trim().required('Required'),
 		category: Yup.string().trim().required('Required'),
-		subcategory: Yup.string().trim().required('Required'),
+		subcategory: Yup.string().trim(),
 		costPrice: Yup.number().typeError('Price must be a number').required('Required'),
 		retailPrice: Yup.number().typeError('Price must be a number').required('Required'),
 	});
@@ -54,11 +58,15 @@ const EditProduct = ({ open, close, refetch, product }) => {
 				retail: data.retailPrice
 			},
 			inStock: false,
-			imgUrl: ""
+			isActive,
+			imgUrl: "",
+			expiryDate: data.expiryDate ? data.expiryDate : "2099-12-12",
+			createdAt: data.createdAt ? data.createdAt : new Date().toISOString(),
+			modifiedAt: new Date().toISOString()
 		}
 
 		try {
-			const response = await editProduct({id: product.id, payload: payload});
+			const response = await editProduct({id: product._id, payload: payload});
 			if(response.data) {
 				toast.success("Product updated successfully");
 				refetch();
@@ -113,6 +121,9 @@ const EditProduct = ({ open, close, refetch, product }) => {
 								</Grid>
 								<Grid item xs={12} md={6}>
 									<TextInput name="retailPrice" label="Retail Price" />
+								</Grid>
+								<Grid item xs={12}>
+									<FormControlLabel name='isActive' control={<Switch checked={isActive} onChange={onActiveChange} />} label="Active" />
 								</Grid>
 								<Grid item xs={6}>
 									<Button disabled={isLoading} type="button" onClick={close} sx={{ height: '57px' }} variant="outlined" fullWidth>Close</Button>
