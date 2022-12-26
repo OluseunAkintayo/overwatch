@@ -1,4 +1,4 @@
-import { TextField, MenuItem, FormControl, FormControlLabel, FormGroup, Checkbox as MuiCheckbox, Tooltip } from '@mui/material';
+import { TextField, MenuItem, FormControl, FormControlLabel, FormGroup, Checkbox as MuiCheckbox, Tooltip, Typography } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import Modal from 'react-responsive-modal';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
@@ -105,5 +105,19 @@ export const ModalTitle = ({ title }) => {
 		<FormHeader>
 			<FormTitle>{title}</FormTitle>
 		</FormHeader>
+	)
+}
+
+const TitleWrapper = styled.div`
+	border-bottom: 0.5px solid rgba(0, 0, 0, 0.3);
+	padding: 0.5rem 1rem;
+	margin-bottom: 1rem;
+`;
+
+export const TitleBar = ({ text }) => {
+	return (
+		<TitleWrapper>
+			<Typography variant="h6">{text}</Typography>
+		</TitleWrapper>
 	)
 }

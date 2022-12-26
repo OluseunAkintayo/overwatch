@@ -35,7 +35,7 @@ const App = () => {
           </Route>
           <Route path="/store" element={<Outlet />}>
             <Route index element={<Store />} />
-            <Route path="suppliers" element={<Vendors />} />
+            <Route path="vendors" element={<Vendors />} />
             <Route path="new-supply" element={<NewSupply />} />
           </Route>
         </Route>

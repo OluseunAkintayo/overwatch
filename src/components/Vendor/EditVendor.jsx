@@ -28,7 +28,6 @@ const EditVendor = ({ open, close, refetch, vendor }) => {
 	const [editVendor] = useEditVendorMutation();
 	
 	const initialValue = {
-		vendorId: vendor.id,
 		companyName: vendor.companyName,
 		companyAddress: vendor.companyAddress,
 		contactPerson: vendor.contactPerson,
@@ -37,7 +36,6 @@ const EditVendor = ({ open, close, refetch, vendor }) => {
 	};
 
 	const validate = Yup.object().shape({
-		vendorId: Yup.string().trim().required('Required'),
 		companyName: Yup.string().trim().required('Required'),
 		companyAddress: Yup.string().trim().required('Required'),
 		contactPerson: Yup.string().trim().required('Required'),
@@ -55,10 +53,13 @@ const EditVendor = ({ open, close, refetch, vendor }) => {
 			contactPerson: data.contactPerson,
 			contactEmail: data.contactEmail,
 			contactPhone: data.contactPhone,
+			isActive: vendor.isActive,
+			createdAt: vendor.createdAt,
+			modifiedAt: new Date().toISOString()
 		}
 
 		try {
-			const res = await editVendor({ id: vendor.id, payload });
+			const res = await editVendor({ id: vendor._id, payload });
 			if(res.data) {
 				setTimeout(() => {
 					setIsLoading(false);
@@ -90,7 +91,7 @@ const EditVendor = ({ open, close, refetch, vendor }) => {
 					validateOnChange={false}
 					onSubmit={(values) => { submitForm(values) }}
 				>
-					{({ errors }) => (
+					{() => (
 						<Form>
 							<Grid container spacing={3} marginTop="0" alignItems="flex-start">
 								<Grid item xs={12}>

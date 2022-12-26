@@ -3,11 +3,9 @@ import { toast } from 'react-toastify'
 import { TextInput, ModalWrapper } from '../../lib';
 import { Formik, Form } from 'formik';
 import FormikErrorFocus from 'formik-error-focus';
-import { Box, Button, CircularProgress, Grid } from '@mui/material';
+import { Button, CircularProgress, Grid } from '@mui/material';
 import styled from '@emotion/styled';
 import * as Yup from 'yup';
-import { customAlphabet } from 'nanoid';
-import axios from 'axios';
 import { useNewVendorMutation } from '../../redux/api/Store';
 
 const ModalBody = styled.div`
@@ -46,30 +44,28 @@ const NewVendor = ({ open, close, refetch }) => {
 		contactPhone: Yup.number().typeError('Price must be a number').required('Required'),
 	});
 
-	const vendorId = customAlphabet('qwertyuiopasdfghjklzxcvbnm1234567890', 8);
 	const [isLoading, setIsLoading] = React.useState(false);
 
 	const submitForm = async (data) => {
 		setIsLoading(true);
 		const payload = {
-			id: vendorId(),
 			companyName: data.companyName,
 			companyAddress: data.companyAddress,
 			contactPerson: data.contactPerson,
 			contactEmail: data.contactEmail,
 			contactPhone: data.contactPhone,
+			isActive: true,
+			createdAt: new Date().toISOString(),
+			modifiedAt: new Date().toISOString(),
 		}
 
 		try {
 			const res = await newVendor(payload);
-			console.log(res);
 			if(res.data) {
-				setTimeout(() => {
-					setIsLoading(false);
-					toast.success("Vendor added successfully!");
-					refetch();
-					close();
-				}, 2000);
+				setIsLoading(false);
+				toast.success("Vendor added successfully!");
+				refetch();
+				close();
 			} else {
 				setIsLoading(false);
 				toast.warn("Error adding vendor!");
@@ -94,7 +90,7 @@ const NewVendor = ({ open, close, refetch }) => {
 					validateOnChange={false}
 					onSubmit={(values) => { submitForm(values) }}
 				>
-					{({ errors }) => (
+					{() => (
 						<Form>
 							<Grid container spacing={3} marginTop="0" alignItems="flex-start">
 								<Grid item xs={12}>

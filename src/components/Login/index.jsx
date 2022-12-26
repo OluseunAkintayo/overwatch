@@ -8,7 +8,6 @@ import { customAlphabet } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import CryptoJS from 'crypto-js';
 
 const Login = () => {
 	const navigate = useNavigate();
@@ -38,29 +37,34 @@ const Login = () => {
 	React.useEffect(() => {
 		generateCode();
 	}, []);
+
+	const [error, setError] = React.useState({ usrname: null, passcode: null });
 	
 	const login = async (data) => {
 		setLoading(true);
-		const response = await axios.get(`/users?username=${data.username}`);
-		if(response?.data?.length === 1) {
-			if(response.data[0].passcode === data.passcode){
-				localStorage.setItem('token', id);
-				setTimeout(() => {
-					navigate("/");
-				}, 1500);
+		try {
+			const config = {
+				url: 'http://localhost:5500/api/auth/login',
+				method: 'POST',
+				data: data
+			}
+			const response = await axios(config);
+			if(response.data.status === 1) {
+				localStorage.setItem('user', JSON.stringify(response.data.user));
+				localStorage.setItem('token', response.data.token);
+				navigate("/");
 			} else {
-				if(response.data[0].passcode !== data.passcode) {
-					setTimeout(() => {
-						setLoading(false);
-						toast.error("Incorrect password, please check again.");
-					}, 1500);
+				if(response.data.message.split(' ').includes('User')) {
+					setError({ usrname: response.data.message, passcode: null })
+					setLoading(false);
+				} else {
+					setError({ usrname: null, passcode: response.data.message });
+					setLoading(false);
 				}
 			}
-		} else if(response?.data?.length === 0) {
-			setTimeout(() => {
-				toast.error("Provided username does not exist");
-				setLoading(false);
-			}, 1000);
+		} catch (error) {
+			setLoading(false);
+			toast.error(error.status + ": an eror has ocurred!");
 		}
 	}
 
@@ -70,7 +74,6 @@ const Login = () => {
 				<Formik
 					initialValues={init}
 					validationSchema={validate}
-					validateOnChange={false}
 					onSubmit={(values) => { login(values) }}
 				>
 					{() => (
@@ -81,9 +84,11 @@ const Login = () => {
 								</Grid>
 								<Grid item xs={12}>
 									<TextInput name="username" label="User ID" />
+									{ error.usrname && <p className='errorText'>{error.usrname}</p>}
 								</Grid>
 								<Grid item xs={12}>
 									<TextInput type="password" name="passcode" label="Password" />
+									{ error.passcode && <p className='errorText'>{error.passcode}</p>}
 								</Grid>
 								<Grid item xs={12}>
 									<Button disabled={loading} type="submit" variant="contained" fullWidth sx={{ height: '3rem', fontWeight: 600 }}>

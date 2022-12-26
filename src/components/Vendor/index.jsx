@@ -5,6 +5,7 @@ import { Add, Delete, Edit } from '@mui/icons-material';
 import NewVendor from './NewVendor';
 import { DataGrid } from '@mui/x-data-grid';
 import EditVendor from './EditVendor';
+import DeleteVendor from './DeleteVendor';
 import { useGetVendorsQuery } from '../../redux/api/Store';
 
 const Container = styled.div`
@@ -24,10 +25,16 @@ const Vendors = () => {
 	const { data: vendors, isLoading, isError, error, refetch } = useGetVendorsQuery();
 	const [newVendorModal, setNewVendorModal] = React.useState(false);
 	const [editVendorModal, setEditVendorModal] = React.useState(false);
+	const [deleteVendorModal, setDeleteVendorModal] = React.useState(false);
 	const [vendorData, setVendorData] = React.useState(null);
 	const viewSupplier = (val) => {
 		setVendorData(val);
 		setEditVendorModal(true);
+	}
+
+	const openDeleteModal = val => {
+		setDeleteVendorModal(true);
+		setVendorData(val);
 	}
 
 	const cols = [
@@ -52,7 +59,7 @@ const Vendors = () => {
 						</Grid>
 						<Grid item xs={6}>
 						<Tooltip title="Delete Vendor" placement='top'>
-							<IconButton aria-label='edit' size="small">
+							<IconButton aria-label='edit' size="small" onClick={() => openDeleteModal(params.row)}>
 								<Delete />
 							</IconButton>
 						</Tooltip>
@@ -75,7 +82,7 @@ const Vendors = () => {
 		<React.Fragment>
 			<Container>
 				<TopBar>
-					<TextField variant='outlined' label="Search" name="search" onChange={handleChange} />
+					<TextField size="small" variant='outlined' label="Search" name="search" onChange={handleChange} />
 					<Button variant='outlined' onClick={() => setNewVendorModal(true)}>
 						<Add />
 						<span>New vendor</span>
@@ -87,8 +94,9 @@ const Vendors = () => {
 							isError ? <Box sx={{ height: '50vh', display: 'grid', placeItems: 'center' }}><Typography color="error">Error {error?.status}: loading vendors failed</Typography></Box> :
 							<DataGrid
 								columns={cols}
+								getRowId={row => row._id}
 								rows={
-									[...vendors].sort((a, b) => a.companyName.localeCompare(b.companyName)).filter(item => {
+									[...vendors.data].filter(item => !item.markedForDeletion).sort((a, b) => a.companyName.localeCompare(b.companyName)).filter(item => {
 										if(search.trim() === "") {
 											return item;
 										} else if(item.companyName.toLowerCase().includes(search.trim().toLowerCase())) {
@@ -110,6 +118,9 @@ const Vendors = () => {
 			</React.Fragment>
 			<React.Fragment>
 				{ editVendorModal && <EditVendor open={editVendorModal} close={() => setEditVendorModal(false)} refetch={refetch} vendor={vendorData} /> }
+			</React.Fragment>
+			<React.Fragment>
+				{ deleteVendorModal && <DeleteVendor open={deleteVendorModal} close={() => setDeleteVendorModal(false)} refetch={refetch} vendor={vendorData} /> }
 			</React.Fragment>
 		</React.Fragment>
 	)

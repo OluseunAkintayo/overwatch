@@ -20,17 +20,20 @@ const DataTable = styled.div`
 
 const Store = () => {
 	const [search, setSearch] = React.useState('');
-	const  { data: products, isLoading, isError, error } = useGetProductsQuery();
+	const  { data: products, isLoading, error } = useGetProductsQuery();
 
 	const cols = [
 		{ field: 'productCode', headerName: 'Product Code' },
-		{ field: 'name', headerName: 'Product Name', width: 250 },
+		{ field: 'name', headerName: 'Product Name', width: 300 },
+		{ field: 'qty', headerName: 'Quantity', width: 100,
+			renderCell: (params) => params.row.quantity ? params.row.quantity : 0
+		},
 		{ field: 'brand', headerName: 'Product Brand', width: 120 },
 		{ field: 'category', headerName: 'Product Category', width: 120 },
 	];
 
 	React.useEffect(() => {
-		document.title = "Overwatch - Store";
+		document.title = "Store: Overwatch";
 		return () => null;
 	}, []);
 
@@ -38,7 +41,7 @@ const Store = () => {
 		<React.Fragment>
 			<Container>
 				<TopBar>
-					<TextField name="search" onChange={(e) => setSearch(e.target.value)} value={search} label="Search" />
+					<TextField name="search" size="small" onChange={(e) => setSearch(e.target.value)} value={search} label="Search" />
 					<Button variant='outlined' href="/store/new-supply">
 						<Add />
 						<span>New Supply</span>
@@ -51,13 +54,14 @@ const Store = () => {
 							products &&
 							<DataGrid
 								columns={cols}
+								getRowId={(row) => row._id}
 								rows={
-									[...products].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
+									[...products.data].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
 										if(search.trim() === "") {
 											return item;
 										} else if(item.name.toLowerCase().includes(search.trim().toLowerCase())) {
 											return item;
-										} else if(item.productCode.toLowerCase().includes(search.trim().toLowerCase())) {
+										} else if(item.productCode.toString().toLowerCase().includes(search.trim().toLowerCase())) {
 											return item;
 										} else if(item.brand.toLowerCase().includes(search.trim().toLowerCase())) {
 											return item;

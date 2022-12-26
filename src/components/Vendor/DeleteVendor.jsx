@@ -1,27 +1,27 @@
 import React from 'react';
 import { toast } from 'react-toastify'
-import { ModalWrapper, ModalTitle, ModalBody } from '../../../lib';
+import { ModalWrapper, ModalTitle, ModalBody } from '../../lib';
 import { Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import { useDeleteCategoryMutation } from '../../../redux/api/Categories';
 import { WarningAmber } from '@mui/icons-material';
+import { useDeleteVendorMutation } from '../../redux/api/Store';
 
 
-const DeleteVendor = ({ open, close, refetch, category: vendor }) => {
-	const [deleteSubcategory, { isLoading, isError }] = useDeleteCategoryMutation();
+const DeleteVendor = ({ open, close, refetch, vendor }) => {
+	const [deleteVendor, { isLoading, isError }] = useDeleteVendorMutation();
 
 	const deleteItem = async (data) => {
 		try {
-			const response = await deleteSubcategory(vendor.id);
+			const response = await deleteVendor(vendor._id);
 			if(response.data) {
-				toast.success("Product category deleted successfully");
+				toast.success("Vendor deleted successfully");
 				refetch();
 				close();
 			} else if(isError || !data) {
-				toast.error("Error deleting product category");
+				toast.error("Error deleting vendor");
 			}
 		} catch (error) {
 			console.log(error);
-			toast.error("Error deleting product category");
+			toast.error("Error deleting vendor");
 		}
 	}
 

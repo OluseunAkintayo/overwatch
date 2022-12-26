@@ -10,7 +10,8 @@ import NewCategory from '../Category/NewCategory';
 import { DataGrid } from '@mui/x-data-grid';
 import { useGetProductsQuery } from '../../../redux/api/Products';
 import { useGetBrandsQuery } from '../../../redux/api/Brands';
-import { useGetCateoriesQuery, useGetSubcateoriesQuery } from '../../../redux/api/Categories';;
+import { useGetCateoriesQuery, useGetSubcateoriesQuery } from '../../../redux/api/Categories';
+import { TitleBar } from '../../../lib';
 
 const MenuItems = styled.div`
 	position: absolute;
@@ -54,6 +55,7 @@ const TopBar = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	gap: 1rem;
+	
 `;
 const DataTable = styled.div`
 	height: calc(100vh - 180px);
@@ -126,7 +128,7 @@ const Products = () => {
 	];
 	
 	React.useEffect(() => {
-		document.title = "Products";
+		document.title = "Products: Overwatch";
 		return () => null;
 	}, []);
 
@@ -163,11 +165,12 @@ const Products = () => {
 
 	return (
 		<React.Fragment>
+			<TitleBar text="Products" />
 			<Container>
 				<TopBar>
 					<TextField autoFocus variant='outlined' size="small" label="Search" name="search" onChange={handleChange} />
 					<Box className='action-menu'>
-						<Button className='action-btn' variant='outlined' sx={{ width: '100%' }} onClick={toggle}>
+						<Button variant='outlined' sx={{ width: '100%' }} onClick={toggle}>
 							<Add />
 							<span>New</span>
 						</Button>
