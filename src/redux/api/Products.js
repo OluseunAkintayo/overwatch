@@ -7,14 +7,14 @@ export const ProductsApi = createApi({
 	baseQuery: fetchBaseQuery({
 		// baseUrl: "https://overwatch-backend.azurewebsites.net/api/",
 		baseUrl: process.env.REACT_APP_BACKEND_URL,
-		// prepareHeaders: (headers) => {
-		// 	if(token) {
-		// 		headers.set('authorization', `Bearer ${token}`);
-		// 		headers.set('Access-Control-Allow-Headers', "*");
-		// 		headers.set('Accept', "application/json");
-		// 	}
-		// 	return headers;
-		// }
+		prepareHeaders: (headers) => {
+			if(token) {
+				headers.set('authorization', `Bearer ${token}`);
+				headers.set('Access-Control-Allow-Headers', "*");
+				headers.set('Accept', "application/json");
+			}
+			return headers;
+		}
 	}),
 	refetchOnReconnect: true,
 	endpoints: (build) => ({

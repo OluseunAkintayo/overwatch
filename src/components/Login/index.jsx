@@ -4,7 +4,6 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { Button, CircularProgress, Grid, Typography } from '@mui/material';
 import { TextInput } from '../../lib';
-import { customAlphabet } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -16,28 +15,14 @@ const Login = () => {
 		return () => null;
 	}, []);
 
-	const init = {
-		username: '',
-		passcode: ''
-	}
+	const init = { username: '', passcode: '' };
 
 	const validate = Yup.object().shape({
 		username: Yup.string().required('Username is required'),
 		passcode: Yup.string().required('Password is required'),
 	})
 
-	const [id, setId] = React.useState(null);
 	const [loading, setLoading] = React.useState(false);
-	const generateCode = () => {
-		const nanoid = customAlphabet('1234567890zxcvbnmasdfghjklqwertyuiop@#$%&', 256);
-		const pid = nanoid();
-		setId(pid);
-	}
-
-	React.useEffect(() => {
-		generateCode();
-	}, []);
-
 	const [error, setError] = React.useState({ usrname: null, passcode: null });
 	
 	const login = async (data) => {
@@ -52,7 +37,8 @@ const Login = () => {
 			if(response.data.status === 1) {
 				localStorage.setItem('user', JSON.stringify(response.data.user));
 				localStorage.setItem('token', response.data.token);
-				navigate("/");
+				localStorage.setItem('tokenExpiryDate', Date.parse(response.data.tokenExpiryDate));
+				navigate("/shop");
 			} else {
 				if(response.data.message.split(' ').includes('User')) {
 					setError({ usrname: response.data.message, passcode: null })

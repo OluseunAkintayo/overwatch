@@ -2,12 +2,10 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { Button, CircularProgress, Grid, Typography } from '@mui/material';
-import { SelectMenu, TextInput } from '../../lib';
-import { customAlphabet } from 'nanoid';
+import { Button, CircularProgress, FormControl, FormGroup, FormLabel, Grid, Typography } from '@mui/material';
+import { TextInput, Checkbox } from '../../lib';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-import CryptoJS from 'crypto-js';
+import { useNewUserMutation } from '../../redux/api/Users';
 
 const NewUser = () => {
 	React.useEffect(() => {
@@ -19,7 +17,7 @@ const NewUser = () => {
 		firstName: '',
 		lastName: '',
 		email: '',
-		designation: '',
+		designation: [],
 		username: '',
 		passcode: ''
 	}
@@ -28,56 +26,36 @@ const NewUser = () => {
 		firstName: Yup.string().required('First name is required'),
 		lastName: Yup.string().required('Last name is required'),
 		email: Yup.string().email().required('Email is required'),
-		designation: Yup.string().required('Email is required'),
+		designation: Yup.array().min(1, 'At least one role must be selected'),
 		username: Yup.string().required('Username is required'),
 		passcode: Yup.string().required('Password is required'),
 	});
 
-	const [id, setId] = React.useState(null);
-	const [loading, setLoading] = React.useState(false);
-	const generateCode = () => {
-		const nanoid = customAlphabet('1234567890zxcvbnmasdfghjklqwertyuiop', 16);
-		const uid = nanoid();
-		setId(uid);
-	}
 
-	React.useEffect(() => {
-		generateCode();
-	}, []);
-
-	const userOptions = [
-		{ name: "Super Admin", value: "Super Admin" },
-		{ name: "Admin", value: "Admin" },
-		{ name: "Cashier", value: "Cashier" },
-	];
+	const [createUser, { isLoading: loading, isError, error}] = useNewUserMutation();
 	
-	const login = async (data, resetForm) => {
-		setLoading(true);
+	const newUser = async (data, resetForm) => {
 		const payload = {
 			...data,
-			id: id,
-			created: new Date().toISOString(),
-			lastUpdated: new Date().toISOString(),
+			isActive: true,
+			createdAt: new Date().toISOString(),
+			modifiedAt: new Date().toISOString(),
 		}
-		const config = {
-			url: 'users',
-			method: 'POST',
-			data: payload
-		}
+
 		try {
-			const res = await axios(config);
-			if(res.status === 201) {
-				setTimeout(async () => {
-					setLoading(false);
-					resetForm({ data: '' });
-					toast.success("User added successfully!");
-				}, 1500);
+			const res = await createUser(payload);
+			console.log(res);
+			if(res.data.status === 1) {
+				toast.success(res.status.message);
+				resetForm();
+			} else {
+				toast.error(res.data.message);
 			}
 		} catch (error) {
-			console.error({error});
-			setLoading(false);
-			toast.error("Error adding user! Try again");
+			console.log(error);
+			toast.error('An error has occurred!')
 		}
+
 	}
 
 	return (
@@ -87,9 +65,9 @@ const NewUser = () => {
 					initialValues={init}
 					validationSchema={validate}
 					validateOnChange={false}
-					onSubmit={(values, { resetForm }) => { login(values, resetForm) }}
+					onSubmit={(values, { resetForm }) => { newUser(values, resetForm) }}
 				>
-					{() => (
+					{({ errors, values }) => (
 						<Form>
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
@@ -105,7 +83,14 @@ const NewUser = () => {
 									<TextInput name="email" label="Email Address" size="small" />
 								</Grid>
 								<Grid item xs={16}>
-									<SelectMenu options={userOptions} name="designation" label="User Designation" size="small" />
+									<FormControl component="fieldset">
+										<FormLabel>User role</FormLabel>
+										<FormGroup row>
+											<Checkbox name="designation" label="Admin" value="admin" />
+											<Checkbox name="designation" label="Cashier" value="Cashier" />
+										</FormGroup>
+									</FormControl>
+									{ errors.designation && <p className='errorText'>{errors.designation}</p> }
 								</Grid>
 								<Grid item xs={16}>
 									<TextInput name="username" label="User ID" size="small" />

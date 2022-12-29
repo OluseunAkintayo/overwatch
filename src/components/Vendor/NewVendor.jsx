@@ -99,22 +99,22 @@ const NewVendor = ({ open, close, refetch }) => {
 								<Grid item xs={12}>
 									<TextInput name="companyAddress" label="Company Address" multiline rows={3} />
 								</Grid>
-								<Grid item xs={12} md={6}>
+								<Grid item xs={12}>
 									<TextInput name="contactPerson" label="Contact Person" />
 								</Grid>
-								<Grid item xs={12} md={6}>
+								<Grid item xs={12}>
 									<TextInput name="contactEmail" label="Contact Email" />
 								</Grid>
-								<Grid item xs={12} md={6}>
+								<Grid item xs={12}>
 									<TextInput name="contactPhone" label="Contact Phone" />
+								</Grid>
+								<Grid item xs={6}>
+									<Button disabled={isLoading} type="button" onClick={close} sx={{ height: '57px' }} variant="outlined" fullWidth>Close</Button>
 								</Grid>
 								<Grid item xs={6}>
 									<Button type="submit" disabled={isLoading} sx={{ height: '57px' }} variant="contained" fullWidth>
 										{ isLoading ? <CircularProgress /> : 'add vendor' }
 									</Button>
-								</Grid>
-								<Grid item xs={6}>
-									<Button disabled={isLoading} type="button" onClick={close} sx={{ height: '57px' }} variant="outlined" fullWidth>Close</Button>
 								</Grid>
 							</Grid>
 							<FormikErrorFocus

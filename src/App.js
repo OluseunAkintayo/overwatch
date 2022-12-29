@@ -22,8 +22,10 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/new-user" element={<NewUser />} />
+        <Route path="/auth" element={<Outlet />}>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<NewUser />} />
+        </Route>
         <Route element={<PrivateRoute />}>
           <Route index element={<Home />} />
           <Route path="shop" element={<Shop />} />

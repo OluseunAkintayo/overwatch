@@ -14,7 +14,7 @@ const ItemModal = ({ open, close, closeParent, item, setSupply, supply }) => {
 		setProduct({ ...product, [prop]: e.target.value });
 	}
 	const [expiryDate, setExpiryDate] = React.useState(dayjs().format("YYYY-MM-DD"));
-	const handleDateChange = (val) => setExpiryDate(val);
+	const handleDateChange = (val) => setExpiryDate(val.format("YYYY-MM-DD"));
 	
 	const addItem = () => {
 		const newProduct = {

@@ -14,29 +14,23 @@ export const TextInput = ({ name, ...props }) => {
 	return <TextField {...config} />;
 }
 
-export const Check = ({ name, label, legend, ...others }) => {
-
-	const { setFieldValue } = useFormikContext();
-	const [field] = useField(name);
-	const handleChange = e => {
-		const { checked } = e.target;
-		setFieldValue(name, checked);
-	}
+export const Checkbox = ({ label, name, defaultChecked, ...props }) => {
+	const [field, meta] = useField(name);
 	const config = {
-		...field, ...others,
-		onChange: handleChange
+		...field, ...props
+
 	}
+	if(meta && meta.touched && meta.error) {
+		config.helpertext = meta.error;
+	}
+	
+	const checkBoxStyle = {
+		color: '#B4B4B4',
+		'& .MuiSvgIcon-root': { fontSize: 32 },
+	};
 
 	return (
-		<FormControl>
-			<FormGroup>
-				<FormControlLabel
-					control={<MuiCheckbox {...config}  />}
-					label={label}
-				>
-				</FormControlLabel>
-			</FormGroup>
-		</FormControl>
+		<FormControlLabel {...config} control={<MuiCheckbox sx={checkBoxStyle} defaultChecked={defaultChecked} />} label={label} />
 	)
 }
 
