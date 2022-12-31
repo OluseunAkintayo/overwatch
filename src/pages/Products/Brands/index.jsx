@@ -86,7 +86,7 @@ const Brands = () => {
 		<React.Fragment>
 			<Container>
 				<TopBar>
-					<TextField variant='outlined' label="Search" name="search" onChange={handleChange} />
+					<TextField variant='outlined' size="small" label="Search" name="search" onChange={handleChange} />
 					<Button variant='outlined' onClick={() => setNewBrandModal(true)}>
 						<Add />
 						<span>New</span>

@@ -44,9 +44,8 @@ const NewUser = () => {
 
 		try {
 			const res = await createUser(payload);
-			console.log(res);
-			if(res.data.status === 1) {
-				toast.success(res.status.message);
+			if(res.status === 1) {
+				toast.success(res.message);
 				resetForm();
 			} else {
 				toast.error(res.data.message);
@@ -86,6 +85,7 @@ const NewUser = () => {
 									<FormControl component="fieldset">
 										<FormLabel>User role</FormLabel>
 										<FormGroup row>
+											<Checkbox name="designation" label="Super Admin" value="superAdmin" />
 											<Checkbox name="designation" label="Admin" value="admin" />
 											<Checkbox name="designation" label="Cashier" value="Cashier" />
 										</FormGroup>

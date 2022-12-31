@@ -21,12 +21,17 @@ const Header = () => {
   const openProductMenu = (event) => setProductMenuAnchor(event.target);
   const [storeMenuAnchor, setStoreMenuAnchor] = React.useState(null);
   const openStoreMenu = (event) => setStoreMenuAnchor(event.target);
+
+  const [reportingMenu, setReportingMenu] = React.useState(null);
+  const openReportingMenu = (event) => setReportingMenu(event.target);
+  const closeReportingMenu = () => setReportingMenu(null);
   
   const handleClose = () => {
     setAnchorEl(null);
     setMenu(null);
     setProductMenuAnchor(null);
     setStoreMenuAnchor(null);
+    closeReportingMenu();
   };
   const logout = () => {
     setAnchorEl(null);
@@ -37,6 +42,8 @@ const Header = () => {
   }
 
   const itemStyle = { fontFamily: "'Mulish', sans-serif" };
+
+  const user = JSON.parse(localStorage.getItem('user'));
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -104,7 +111,8 @@ const Header = () => {
                 <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/shop") }}>Shop</MenuItem>
                 <MenuItem sx={itemStyle} onClick={openProductMenu}>Products</MenuItem>
                 <MenuItem sx={itemStyle} onClick={openStoreMenu}>Store</MenuItem>
-                <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/reporting"); }}>Reporting</MenuItem>
+                <MenuItem sx={itemStyle} onClick={openReportingMenu}>Reporting</MenuItem>
+                <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/settings"); }}>Settings</MenuItem>
               </Menu>
               <Menu
                 sx={{ mt: '8px' }}
@@ -119,7 +127,7 @@ const Header = () => {
                   horizontal: 'right',
                 }}
                 open={Boolean(productMenuAnchor)}
-                onClose={handleClose}
+                onClose={() => setProductMenuAnchor(null)}
               >
                 <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/products"); }}>Products</MenuItem>
                 <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/products/brands"); }}>Brands</MenuItem>
@@ -138,11 +146,29 @@ const Header = () => {
                   horizontal: 'right',
                 }}
                 open={Boolean(storeMenuAnchor)}
-                onClose={handleClose}
+                onClose={() => setStoreMenuAnchor(null)}
               >
                 <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/store"); }}>Store</MenuItem>
                 <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/store/vendors"); }}>Suppliers</MenuItem>
                 <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/store/new-supply") }}>New Supply</MenuItem>
+              </Menu>
+              <Menu
+                sx={{ mt: '8px' }}
+                keepMounted
+                anchorEl={reportingMenu}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(reportingMenu)}
+                onClose={closeReportingMenu}
+              >
+                <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/reports/sales"); }}>Sales Reports</MenuItem>
+                <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/reports/inventory"); }}>Inventory Report</MenuItem>
               </Menu>
             </div>
         </Toolbar>

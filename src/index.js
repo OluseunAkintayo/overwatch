@@ -15,7 +15,8 @@ const theme = createTheme({
     action: {
       disabled: 'rgba(0,128,128, 0.4)',
       disabledBackground: 'rgba(0,128,128, 0.4)',
-    }
+    },
+    mode: 'light'
   },
   typography: {
     htmlFontSize: 16,

@@ -38,16 +38,16 @@ const Shop = () => {
 			if(product.quantity === 0) {
 				toast.error("Item unavailable");
 			} else {
-				let addedItem = { ...product, added: 1 };
+				let addedItem = { ...product, orderQty: 1 };
 				tempCart = [...cart, addedItem];
 				setCart(tempCart);
 				localStorage.setItem('cart', JSON.stringify(tempCart));
 			}
 		} else if(cartItem) {
-			if(cartItem.added === cartItem.quantity) {
+			if(cartItem.orderQty === cartItem.quantity) {
 				toast.error("Item quantity cannot be exceeded");
-			} else if(cartItem.added < cartItem.quantity) {
-				const newItem = { ...cartItem, added: cartItem.added + 1 };
+			} else if(cartItem.orderQty < cartItem.quantity) {
+				const newItem = { ...cartItem, orderQty: cartItem.orderQty + 1 };
 				tempCart[cartItemIndex] = newItem;
 				setCart(tempCart);
 				localStorage.setItem('cart', JSON.stringify(tempCart));
@@ -56,16 +56,14 @@ const Shop = () => {
 	}
 
 	const cols = [
-		{ field: 'productCode', headerName: 'Product Code' },
+		// { field: 'productCode', headerName: 'Product Code' },
 		{ field: 'name', headerName: 'Product Name', width: 250 },
+		{  field: 'quantity', headerName: 'Quantity', width: 120 },
 		{ 
-			field: 'quantity', headerName: 'Quantity', width: 120,
-		},
-		{ 
-			field: 'price', headerName: 'Price', width: 120,
+			field: 'price', headerName: 'Price', width: 100,
 			renderCell: params => Number(params.row.pricing.retail).toLocaleString()
 		},
-		{ field: 'category', headerName: 'Product Category', width: 120 },
+		{ field: 'category', headerName: 'Product Category', width: 150 },
 		{
 			field: 'action',
 			headerName: 'Action',
@@ -90,7 +88,7 @@ const Shop = () => {
 	React.useEffect(() => {
 		let totalCount = 0;
 		cart.forEach(item => {
-			totalCount += item.added;
+			totalCount += item.orderQty;
 		});
 		setCount(totalCount);
 	}, [cart]);
@@ -100,7 +98,7 @@ const Shop = () => {
 		<React.Fragment>
 			<Container>
 				<TopBar>
-					<TextField size="small" variant='outlined' label="Search" name="search" onChange={handleChange} />
+					<TextField size="small" variant='outlined' label="Search" name="search" onChange={handleChange} autoFocus />
 					<Box onClick={() => setCartModal(true)} sx={{ position: 'relative', left: -15, cursor: 'pointer' }}>
 						<ShoppingCartCheckoutOutlined sx={{ color: 'teal' }} />
 						<span style={{
@@ -133,7 +131,7 @@ const Shop = () => {
 											return item;
 										} else if(item.name.toLowerCase().includes(search.trim().toLowerCase())) {
 											return item;
-										} else if(item.productCode.toLowerCase().includes(search.trim().toLowerCase())) {
+										} else if(item.productCode.toString().toLowerCase().includes(search.trim().toLowerCase())) {
 											return item;
 										} else if(item.brand.toLowerCase().includes(search.trim().toLowerCase())) {
 											return item;

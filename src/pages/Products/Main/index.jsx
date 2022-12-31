@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, CircularProgress, TextField, Box, Grid, IconButton, Typography } from '@mui/material';
+import { Button, CircularProgress, TextField, Box, Grid, IconButton, Typography, Menu, MenuItem } from '@mui/material';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import NewProduct from './NewProduct';
 import EditProduct from './EditProduct';
@@ -13,42 +13,8 @@ import { useGetBrandsQuery } from '../../../redux/api/Brands';
 import { useGetCateoriesQuery, useGetSubcateoriesQuery } from '../../../redux/api/Categories';
 import { TitleBar } from '../../../lib';
 
-const MenuItems = styled.div`
-	position: absolute;
-	display: flex;
-	flex-direction: column;
-	outline: ${props => props.borderWidth + " rgba(0, 128, 128, 0.5) solid"};
-	margin-top: 5px;
-	border-radius: 0.25rem;
-	background-color: #FFFFFF;
-	z-index: 10;
-	right: 0;
-	left: 0;
-	height: ${props => props.height};
-	overflow: hidden;
-	transition: all ease-in-out 0.2s;
-	span {
-		text-align: center;
-		text-transform: uppercase;
-		padding: 0.25rem 0;
-		cursor: pointer;
-		background-color: rgba(0, 128, 128, 0.3);
-		&:hover {
-			background-color: rgba(0, 128, 128, 0.5);
-		}
-		&:nth-child(2) {
-			border-top: 0.2px solid rgba(0, 128, 128, 0.5);
-			border-bottom: 0.2px solid rgba(0, 128, 128, 0.5);
-		}
-	}
-`;
 const Container = styled.div`
 	padding: 1rem;
-	.action-menu {
-		height: 33px;
-		position: relative;
-		width: 6rem;
-	}
 `;
 const TopBar = styled.div`
 	display: flex;
@@ -58,8 +24,8 @@ const TopBar = styled.div`
 	
 `;
 const DataTable = styled.div`
-	height: calc(100vh - 180px);
-	margin-top: 2rem;
+	height: calc(100vh - 220px);
+	margin-top: 1rem;
 `;
 
 const Products = () => {
@@ -67,12 +33,11 @@ const Products = () => {
 	const [newProductModal, setNewProductModal] = React.useState(false);
 	const [newBrandModal, setNewBrandModal] = React.useState(false);
 	const [newCategoryModal, setNewCategoryModal] = React.useState(false);
-	const [height, setHeight] = React.useState("0px");
-	const [borderWidth, setBorderWidth] = React.useState("0px");
-	const toggle = () => {
-		setHeight(height === "0px" ? "88px" : "0px");
-		setBorderWidth(borderWidth === "0px" ? "1px" : "0px");
-	}
+	// new items menu
+	const [menu, setMenu] = React.useState(null);
+  const openMenu = (event) => setMenu(event.currentTarget);
+  const closeMenu = (event) => setMenu(null);
+  const itemStyle = { fontFamily: "'Mulish', sans-serif" };
 	
 	const response = useGetProductsQuery();
 	const { isLoading, data, refetch, isError, error } = response;
@@ -170,15 +135,29 @@ const Products = () => {
 				<TopBar>
 					<TextField autoFocus variant='outlined' size="small" label="Search" name="search" onChange={handleChange} />
 					<Box className='action-menu'>
-						<Button variant='outlined' sx={{ width: '100%' }} onClick={toggle}>
+						<Button variant='outlined' sx={{ width: '92px' }} onClick={openMenu}>
 							<Add />
 							<span>New</span>
 						</Button>
-						<MenuItems height={height} borderWidth={borderWidth}>
-							<span onClick={() => { setNewProductModal(true); setHeight("0px"); setBorderWidth("0px") }}>Product</span>
-							<span onClick={() => { setNewBrandModal(true); setHeight("0px"); setBorderWidth("0px"); }}>Brand</span>
-							<span onClick={() =>  { setNewCategoryModal(true); setHeight("0px"); setBorderWidth("0px"); }}>Category</span>
-						</MenuItems>
+						<Menu
+                sx={{ mt: '36px' }}
+                keepMounted
+                anchorEl={menu}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(menu)}
+                onClose={closeMenu}
+              >
+                <MenuItem sx={itemStyle} onClick={() => { setNewProductModal(true); closeMenu(); }}>Product</MenuItem>
+                <MenuItem sx={itemStyle} onClick={() => { setNewBrandModal(true); closeMenu(); }}>Brand</MenuItem>
+                <MenuItem sx={itemStyle} onClick={() => { setNewCategoryModal(true); closeMenu(); }}>Category</MenuItem>
+              </Menu>
 					</Box>
 				</TopBar>
 				<DataTable>

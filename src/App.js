@@ -3,18 +3,20 @@ import { Routes, Route, BrowserRouter, Outlet } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-responsive-modal/styles.css';
 import { ToastContainer } from 'react-toastify';
-import Home from './components/Home';
-import Shop from './components/Shop';
-import Products from './components/Products';
-import Brands from './components/Products/Brands';
-import Category from './components/Products/Category';
-import Subcategory from './components/Products/Subcategory';
-import Login from './components/Login';
-import NewUser from './components/Login/NewUser';
-import Store from './components/Store';
-import Vendors from './components/Vendor';
-import NewSupply from './components/Store/NewSupply';
-import PrivateRoute from './components/default/PrivateRoute';
+import Home from './pages/Home';
+import Shop from './pages/Shop';
+import Products from './pages/Products';
+import Brands from './pages/Products/Brands';
+import Category from './pages/Products/Category';
+import Subcategory from './pages/Products/Subcategory';
+import Login from './pages/Login';
+import NewUser from './pages/Login/NewUser';
+import Store from './pages/Store';
+import Vendors from './pages/Vendor';
+import NewSupply from './pages/Store/NewSupply';
+import Settings from './pages/Settings';
+import PrivateRoute from './components/PrivateRoute';
+import Reporting from './pages/Reporting';
 
 
 const App = () => {
@@ -28,6 +30,7 @@ const App = () => {
         </Route>
         <Route element={<PrivateRoute />}>
           <Route index element={<Home />} />
+          <Route path='/settings' element={<Settings />} />
           <Route path="shop" element={<Shop />} />
           <Route path="products" element={<Outlet />}>
             <Route index element={<Products />} />
@@ -39,6 +42,10 @@ const App = () => {
             <Route index element={<Store />} />
             <Route path="vendors" element={<Vendors />} />
             <Route path="new-supply" element={<NewSupply />} />
+          </Route>
+          <Route path="/reports" element={<Outlet />}>
+            <Route path="sales" element={<Reporting />} />
+            <Route path="inventory" element={<Reporting />} />
           </Route>
         </Route>
       </Routes>

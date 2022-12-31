@@ -37,11 +37,12 @@ a {
 }
 
 .cartModal {
-  height: 80vh;
+  /* height: 80vh; */
   overflow-y: auto;
   width: 100%;
   max-width: 900px !important;
   border-radius: 0.25rem !important;
+  /* background: transparent !important; */
 }
 
 .errorText {
@@ -53,4 +54,8 @@ a {
   text-align: left;
   margin: 3px 0.875rem 0 0.875rem;
   color: #d32f2f;
+}
+
+.MuiDataGrid-main + div {
+  display: none !important;
 }

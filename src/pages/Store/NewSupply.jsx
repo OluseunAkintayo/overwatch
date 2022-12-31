@@ -50,7 +50,6 @@ const NewSupply = () => {
 		supplierError: null, invoiceError: null
 	})
 	const [loading, setLoading] = React.useState(false);
-	const [editProduct] = useEditProductMutation();
 	const [newSupply] = useNewSupplyMutation();
 
 	const submit = async () => {
@@ -65,7 +64,6 @@ const NewSupply = () => {
 			setError({ supplierError: null, invoiceError: null, productsError: "At least one product should be added" });
 			setLoading(false);
 		} else {
-			// console.log(supply);
 			const payload = {
 				vendor: supply.supplier,
 				invoiceNumber: supply.invoiceNumber,
@@ -131,7 +129,7 @@ const NewSupply = () => {
 							<Autocomplete
 								disablePortal
 								id="vendors-select-box"
-								options={vendors?.data}
+								options={vendors?.data.filter(item => !item.markedForDeletion)}
 								getOptionLabel={(option) => option.companyName}
 								onInputChange={(e, val) => {
 									setSupply({ ...supply, supplier: val });

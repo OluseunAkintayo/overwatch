@@ -1,4 +1,4 @@
-import { TextField, MenuItem, FormControl, FormControlLabel, FormGroup, Checkbox as MuiCheckbox, Tooltip, Typography } from '@mui/material';
+import { TextField, MenuItem, FormControl, FormControlLabel, FormGroup, Checkbox as MuiCheckbox, Tooltip, Typography, Paper } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import Modal from 'react-responsive-modal';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
@@ -65,19 +65,23 @@ export const ModalWrapper = (props) => {
 	const { open, close, modalClass, children } = props;
 	const closeBtn = (
 		<Tooltip placement='left' title="Close" onClick={close}>
-			<CancelPresentationIcon sx={{ color: 'rgba(0, 0, 0, 0.4)', fontSize: '2rem' }} />
+			<CancelPresentationIcon sx={{ color: 'rgba(0, 0, 0, 0.4)', fontSize: '2rem',  }} />
 		</Tooltip>
 	);
 
 	return (
 		<Modal center open={open} onClose={() => null} classNames={{ modal: modalClass }} closeIcon={closeBtn}>
-			{ children }
+			{/* <Paper sx={{ minHeight: '100%', boxShadow: 0 }}> */}
+				{ children }
+			{/* </Paper> */}
 		</Modal>
 	)
 }
 
 export const ModalBody = styled.div`
 	padding: 1rem;
+	position: relative;
+	height: 100%;
 `;
 
 const FormHeader = styled.div`
