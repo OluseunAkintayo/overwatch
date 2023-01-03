@@ -5,7 +5,6 @@ import { Formik, Form } from 'formik';
 import FormikErrorFocus from 'formik-error-focus';
 import { Button, CircularProgress, Grid } from '@mui/material';
 import * as Yup from 'yup';
-import { customAlphabet } from 'nanoid';
 import { useNewSubcategoryMutation } from '../../../redux/api/Categories';
 
 
@@ -26,13 +25,10 @@ const NewSubcategory = ({ open, close, refetch, categories }) => {
 		parentCategory: Yup.string().trim().required('Required'),
 	});
 	
-	const subCategoryId = customAlphabet('qwertyuiopasdfghjklzxcvbnm1234567890', 8);
-	
 	const [newSubcategory, { isLoading, isError }] = useNewSubcategoryMutation();
 
 	const submitForm = async (data) => {
 		const payload = {
-			id: subCategoryId(),
 			name: data.name,
 			description: data.description,
 			parentCategory: data.parentCategory,

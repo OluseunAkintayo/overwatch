@@ -4,6 +4,7 @@ import { Box, Button, Grid, MenuItem, Table, TableBody, TableCell, TableContaine
 import { Delete } from '@mui/icons-material';
 import { useNewOrderMutation } from '../../redux/api/Transactions';
 import { toast } from 'react-toastify';
+import { customAlphabet } from 'nanoid';
 
 const HeaderText = ({ text }) => (
 	<Typography variant="h5" sx={{ fontSize: 12, fontWeight: 600 }}>{text}</Typography>
@@ -36,9 +37,12 @@ const Cart = ({ open, close, cart, setCart, refetch }) => {
 	const handlePaymentChange = e => setPaymentMode(e.target.value);
 	const [customer, setCustomer] = React.useState('');
 
+	const nanoidI = customAlphabet('1234567890QWERTYUIO-PASDFGHJKLZXCVBNM', 10);
+	const transactionId = nanoidI();
 	const submit = async (e) => {
 		e.preventDefault();
 		const formData = {
+			transactionId,
 			products: cart,
 			transactionTotal: total,
 			paymentMode,
@@ -123,47 +127,47 @@ const Cart = ({ open, close, cart, setCart, refetch }) => {
 						<Typography variant="h6">Total -</Typography>
 						<Typography variant="h6">{total.toLocaleString()}</Typography>
 					</Box>
-					<Grid container columnSpacing={2} rowSpacing={4} sx={{ marginTop: '0.1rem' }} alignItems="center">
+					<Grid container columnSpacing={2} rowSpacing={3} sx={{ marginTop: '0.25rem' }} alignItems="center">
 						<Grid item xs={12}>
-							<TextField name="customer" value={customer} onChange={e => setCustomer(e.target.value)} fullWidth label="Customer" />
+							<TextField size="small" name="customer" value={customer} onChange={e => setCustomer(e.target.value)} fullWidth label="Customer" />
 						</Grid>
 						<Grid item xs={4}>
-							<TextField select fullWidth label="Payment Method" value={paymentMode} onChange={handlePaymentChange}>
+							<TextField select fullWidth label="Payment Method" value={paymentMode} onChange={handlePaymentChange} size="small">
 								<MenuItem value="cash">Cash</MenuItem>
 								<MenuItem value="card">Card</MenuItem>
 								<MenuItem value="transfer">Transfer</MenuItem>
 							</TextField>
 						</Grid>
-						<>
+						<React.Fragment>
 							{
 								paymentMode === "cash" &&
 								<Grid item xs={8}>
 									<Grid container spacing={3}>
 										<Grid item xs={6}>
-											<TextField name="amountTendered" label="Amount Tendered" autoFocus fullWidth value={amountTendered} onChange={e => setAmountTendered(e.target.value)} />
+											<TextField size="small" name="amountTendered" label="Amount Tendered" autoFocus fullWidth value={amountTendered} onChange={e => setAmountTendered(e.target.value)} />
 										</Grid>
 										<Grid item xs={6}>
-											<TextField name="change" label="Change" fullWidth value={balance.toLocaleString()} disabled />
+											<TextField size="small" name="change" label="Change" fullWidth value={balance.toLocaleString()} disabled />
 										</Grid>
 									</Grid>
 								</Grid>
 							}
-						</>
-						<>
+						</React.Fragment>
+						<React.Fragment>
 							{
 								(paymentMode === "card" || paymentMode === "transfer") &&
 								<Grid item xs={8}>
 									<Grid container spacing={3}>
 										<Grid item xs={6}>
-											<TextField name="bank" label="Issuer / Bank" fullWidth value={bank} onChange={e => setBank(e.target.value)} />
+											<TextField size="small" name="bank" label="Issuer / Bank" fullWidth value={bank} onChange={e => setBank(e.target.value)} />
 										</Grid>
 										<Grid item xs={6}>
-											<TextField name="referenceNumber" label="Reference Number" fullWidth value={referenceNumber} onChange={e => setReferenceNumber(e.target.value)} />
+											<TextField size="small" name="referenceNumber" label="Reference Number" fullWidth value={referenceNumber} onChange={e => setReferenceNumber(e.target.value)} />
 										</Grid>
 									</Grid>
 								</Grid>
 							}
-						</>
+						</React.Fragment>
 						<Grid item xs={12}>
 							<Grid container spacing={3}>
 								<Grid item xs={6}>

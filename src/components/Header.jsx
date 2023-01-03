@@ -48,8 +48,8 @@ const Header = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', paddingRight: 0 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '', cursor: 'pointer' }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', pl: { xs: 2 }, pr: { xs: 2 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '', cursor: 'pointer' }} component="a" href="/">
             <Visibility />
             <Typography variant="h6" sx={{ fontWeight: 900 }}>VERWATCH</Typography>
           </Box>

@@ -25,9 +25,12 @@ export const TransactionsApi = createApi({
 				body: data
 			}),
 		}),
+		getSales: build.query({
+			query: () => 'transactions/sales'
+		}),
 	}),
 });
 
 export const {
-	useNewOrderMutation
+	useNewOrderMutation, useGetSalesQuery
 } = TransactionsApi;

@@ -16,7 +16,7 @@ import Vendors from './pages/Vendor';
 import NewSupply from './pages/Store/NewSupply';
 import Settings from './pages/Settings';
 import PrivateRoute from './components/PrivateRoute';
-import Reporting from './pages/Reporting';
+import Sales from './pages/Reporting/Sales';
 
 
 const App = () => {
@@ -44,8 +44,8 @@ const App = () => {
             <Route path="new-supply" element={<NewSupply />} />
           </Route>
           <Route path="/reports" element={<Outlet />}>
-            <Route path="sales" element={<Reporting />} />
-            <Route path="inventory" element={<Reporting />} />
+            <Route path="sales" element={<Sales />} />
+            <Route path="inventory" element={<Sales />} />
           </Route>
         </Route>
       </Routes>

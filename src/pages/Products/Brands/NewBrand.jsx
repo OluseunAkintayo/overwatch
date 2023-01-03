@@ -5,7 +5,6 @@ import { Formik, Form } from 'formik';
 import FormikErrorFocus from 'formik-error-focus';
 import { Button, CircularProgress, Grid } from '@mui/material';
 import * as Yup from 'yup';
-import { customAlphabet } from 'nanoid';
 import { useNewBrandMutation } from '../../../redux/api/Brands';
 
 
