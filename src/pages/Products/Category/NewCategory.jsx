@@ -5,11 +5,12 @@ import { Formik, Form } from 'formik';
 import FormikErrorFocus from 'formik-error-focus';
 import { Button, CircularProgress, Grid } from '@mui/material';
 import * as Yup from 'yup';
-import { customAlphabet } from 'nanoid';
-import { useNewCategoryMutation } from '../../../redux/api/Categories';
+import axios from 'axios';
 
 
 const NewCategory = ({ open, close, refetch }) => {
+	const [isLoading, setIsLoading] = React.useState(false);
+	const [error, setError] = React.useState(null);
 
 	const initialValue = { name: '', description: '' };
 	
@@ -17,10 +18,10 @@ const NewCategory = ({ open, close, refetch }) => {
 		name: Yup.string().trim().required('Required'),
 		description: Yup.string().trim().required('Required'),
 	});
-	
-	const [newCategory, { isLoading, isError }] = useNewCategoryMutation();
 
 	const submitForm = async (data) => {
+		setIsLoading(true);
+		const token = localStorage.getItem('token');
 		const payload = {
 			name: data.name,
 			description: data.description,
@@ -28,19 +29,30 @@ const NewCategory = ({ open, close, refetch }) => {
 			createdAt: new Date().toISOString(),
 			modifiedAt: new Date().toISOString()
 		}
+		const config = {
+			url: 'products/categories/new',
+			method: "POST",
+			headers: {
+				"Accept": "*",
+				"Authorization": `Bearer ${token}`,
+				"Content-Type": "application/json"
+			},
+			data: payload
+		}
 
 		try {
-			const response = await newCategory(payload);
-			if(response.data) {
+			const response = await axios.request(config);
+			if(response.status === 201) {
 				toast.success("Product category added successfully");
 				refetch();
 				close();
-			} else if(isError) {
+			} else if(error) {
 				toast.error("Error creating product category");
 			}
 		} catch (error) {
 			console.log(error);
-			toast.error("Error creating product category");
+			setError(error);
+			toast.error(error.status + ": Server error");
 		}
 	}
 

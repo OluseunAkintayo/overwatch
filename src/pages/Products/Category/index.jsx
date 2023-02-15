@@ -6,7 +6,8 @@ import NewCategory from './NewCategory';
 import EditCategory from './EditCategory';
 import DeleteCategory from './DeleteCategory';
 import { DataGrid } from '@mui/x-data-grid';
-import { useGetCateoriesQuery } from '../../../redux/api/Categories';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 const Container = styled.div`
 	padding: 1rem;
@@ -28,7 +29,31 @@ const DataTable = styled.div`
 `;
 
 const Category = () => {
-	const response = useGetCateoriesQuery();
+	const queryFn = async (URL, method) => {
+		const token = localStorage.getItem('token');
+		let config = {
+			url: URL,
+			method: method,
+			headers: {
+				"Accept": "*",
+				"Authorization": `Bearer ${token}`,
+				"Content-Type": "application/json"
+			},
+		}
+		try {
+			const res = await axios.request(config);
+			if(res?.data && res.data?.status === 1) {
+				return res?.data;
+			}
+		} catch (error) {
+			return error;
+		}
+	}
+	const response = useQuery({
+		queryKey: ['categories'],
+		queryFn: () => queryFn('products/categories/list', 'GET'),
+		cacheTime: 300000, networkMode: 'offlineFirst'
+	});
 	const { isLoading, data, refetch, isError, error } = response;
 	const [newCategoryModal, setNewCategoryModal] = React.useState(false);
 	const [category, setCategory] = React.useState(null);
