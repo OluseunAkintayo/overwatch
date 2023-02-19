@@ -51,7 +51,8 @@ interface BrandProps {
 	manufacturer: string;
 	modifiedAt: string;
 	createdAt: string;
-	isActive: Boolean;
+	isActive: boolean;
+	markedForDeletion: boolean;
 }
 
 interface CategoryProps {
@@ -187,7 +188,7 @@ const NewProduct = ({ open, close, refetch, brandsData, categoriesData }: newPro
 						<Grid item xs={6}>
 							<Autocomplete
 								id="brands"
-								options={brandsData && brandsData.sort((a: BrandProps, b: BrandProps) => a.name.localeCompare(b.name))}
+								options={brandsData && brandsData.sort((a: BrandProps, b: BrandProps) => a.name.localeCompare(b.name)).filter((item: BrandProps) => !item.markedForDeletion).filter((item: BrandProps) => item.isActive)}
 								getOptionLabel={(val: BrandProps) => val.name}
 								onChange={(e, value) => setFieldValue("brand", value?.name)}
 								renderInput={(params) =>(

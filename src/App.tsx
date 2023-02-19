@@ -7,10 +7,12 @@ import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Products from './pages/Products';
 import Brands from './pages/Products/Brands';
+import Category from './pages/Products/Category';
+import SalesReport from './pages/Reporting/Sales';
 
 type Props = {};
 
-axios.defaults.baseURL = "http://localhost:5500/api/";
+axios.defaults.baseURL = import.meta.env.REACT_APP_BACKEND_URL;
 
 const App = (props: Props) => {
   return (
@@ -23,6 +25,10 @@ const App = (props: Props) => {
           <Route path="/products" element={<Outlet />}>
             <Route index element={<Products />} />
             <Route path="brands" element={<Brands />} />
+            <Route path="categories" element={<Category />} />
+          </Route>
+          <Route path="/reports" element={<Outlet />}>
+            <Route path="sales" element={<SalesReport />} />
           </Route>
         </Route>
 

@@ -11,6 +11,7 @@ const initialState = {
 	deleteBrandModal: false,
 	newCategoryModal: false,
 	editCategoryModal: false,
+	deleteCategoryModal: false,
 }
 
 export const modalSlice = createSlice({
@@ -41,8 +42,17 @@ export const modalSlice = createSlice({
 		setCategoryModal: (state, action) => {
 			state.newCategoryModal = action.payload;
 		},
+		setNewCategoryModal: (state, action) => {
+			state.newCategoryModal = action.payload;
+		},
+		setEditCategoryModal: (state, action) => {
+			state.editCategoryModal = action.payload;
+		},
+		setDeleteCategoryModal: (state, action) => {
+			state.deleteCategoryModal = action.payload;
+		}
 	}
 });
 
-export const { setCartModal, setProductModal, setEditProductModal, setNewBrandModal, setEditBrandModal, setDeleteBrandModal, setCategoryModal, setDeleteProductModal } = modalSlice.actions;
+export const { setCartModal, setProductModal, setEditProductModal, setNewBrandModal, setEditBrandModal, setDeleteBrandModal, setCategoryModal, setDeleteProductModal, setNewCategoryModal, setEditCategoryModal, setDeleteCategoryModal } = modalSlice.actions;
 export default modalSlice.reducer;

@@ -46,7 +46,7 @@ const DeleteProduct = ({ open, close, refetch, product }: DeleteModalProps) => {
 				"Authorization": `Bearer ${token}`,
 				"Content-Type": "application/json"
 			},
-			data: { id: product._id }
+			data: { id: product?._id }
 		}
 		try {
 			const res = await axios.request(config);

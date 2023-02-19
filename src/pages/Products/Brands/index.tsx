@@ -1,15 +1,15 @@
 import React from 'react';
-import styled from '@emotion/styled';
-import { Button, CircularProgress, TextField, Box, Grid, IconButton, Typography } from '@mui/material';
-import { Add, Delete, Edit } from '@mui/icons-material';
-import NewBrand from './NewBrand';
-// import EditBrand from './EditBrand';
-// import DeleteBrand from './DeleteBrand';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
-import { setDeleteBrandModal, setEditBrandModal, setNewBrandModal } from '../../../store/modals';
+import NewBrand from './NewBrand';
+import EditBrand from './EditBrand';
+import styled from '@emotion/styled';
 import { connect } from 'react-redux';
+import { useQuery } from '@tanstack/react-query';
+import { Add, Delete, Edit } from '@mui/icons-material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { setDeleteBrandModal, setEditBrandModal, setNewBrandModal } from '../../../store/modals';
+import { Button, CircularProgress, TextField, Box, Grid, IconButton, Typography } from '@mui/material';
+import DeleteBrand from './DeleteBrand';
 
 interface BrandComponentProps {
 	newBrandModal: boolean;
@@ -21,6 +21,15 @@ interface BrandComponentProps {
 	closeEditBrandModal: () => void;
 	openDeleteBrandModal: () => void;
 	closeDeleteBrandModal: () => void;
+}
+
+interface BrandProps {
+	_id?: string;
+	name: string
+	manufacturer: string;
+	isActive: boolean | undefined;
+	modifiedAt?: string;
+	createdAt?: string;
 }
 
 const Container = styled.div`
@@ -70,13 +79,13 @@ const Brands = (props: BrandComponentProps) => {
 		networkMode: 'offlineFirst'
 	});
 
-	const [brand, setBrand] = React.useState(null);
-	const openEditModal = (val: React.SetStateAction<null>) => {
+	const [brand, setBrand] = React.useState<BrandProps | null>(null);
+	const openEditModal = (val: BrandProps) => {
 		setBrand(val);
 		openEditBrandModal();
 	}
 
-	const openDeleteModal = (val: React.SetStateAction<null>) => {
+	const openDeleteModal = (val: BrandProps) => {
 		setBrand(val);
 		openDeleteBrandModal();
 	}
@@ -145,7 +154,9 @@ const Brands = (props: BrandComponentProps) => {
 								columns={cols}
 								getRowId={(row) => row._id}
 								rows={
-									[...brands.data].sort((a, b) => a.name?.localeCompare(b.name)).filter(item => {
+									[...brands.data].sort((a, b) => a.name?.localeCompare(b.name))
+									.filter(item => !item.markedForDeletion)
+									.filter(item => {
 										if(search.trim() === "") {
 											return item;
 										} else if(item.name.toLowerCase().includes(search.trim().toLowerCase())) {
@@ -164,14 +175,12 @@ const Brands = (props: BrandComponentProps) => {
 				{
 					newBrandModal && <NewBrand open={newBrandModal} close={closeNewBrandModal} refetch={refetch} />
 				}
-				{/*
 				{
-					editModal && <EditBrand open={editModal} close={() => setEditModal(false)} refetch={refetch} brand={brand} />
+					editBrandModal && <EditBrand open={editBrandModal} close={() => { closeEditBrandModal(); setBrand(null); }} refetch={refetch} brand={brand} />
 				}
 				{
-					deleteModal && <DeleteBrand open={deleteModal} close={() => setDeleteModal(false)} refetch={refetch} brand={brand} />
+					deleteBrandModal && <DeleteBrand open={deleteBrandModal} close={() => { closeDeleteBrandModal(); setBrand(null) }} refetch={refetch} id={brand?._id} brandName={brand?.name} />
 				}
-				*/}
 			</React.Fragment>
 		</React.Fragment>
 	)
