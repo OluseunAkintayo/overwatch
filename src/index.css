@@ -51,3 +51,7 @@ a {
 .MuiDataGrid-main + div {
   display: none !important;
 }
+
+.MuiTableCell-root {
+  font-family: 'Mulish', sans-serif !important;
+}

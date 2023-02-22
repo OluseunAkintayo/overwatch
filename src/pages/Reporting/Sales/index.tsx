@@ -39,8 +39,8 @@ const SalesReport = () => {
 	const [error, setError] = React.useState<any>(null);
 	const [filterModal, setFilterModal] = React.useState<boolean>(false);
 	const [transactions, setTransactions] = React.useState<TransactionProps[] | null>(null);
-	const [viewModal, setViewModal] = React.useState(false);
 	const [transaction, setTransaction] = React.useState<TransactionProps | null>(null);
+	const [viewModal, setViewModal] = React.useState(false);
 
 	const fetchFn = async () => {
 		const token = localStorage.getItem('token') as string | null;
@@ -64,7 +64,7 @@ const SalesReport = () => {
 		}
 	}
 
-	const { data, isLoading } = useQuery({
+	const { data, isLoading, refetch } = useQuery({
 		queryKey: ['salesReport'], queryFn: fetchFn,
 		keepPreviousData: true, cacheTime: 600000, staleTime: 600000,
 		networkMode: 'offlineFirst'
@@ -112,7 +112,7 @@ const SalesReport = () => {
 							</Box>
 							: transactions &&
 							<TableContainer component={Paper}>
-								<Table sx={{ minWidth: 0, height: 'calc(100vh - 185px)' }} aria-label="report table" stickyHeader>
+								<Table sx={{ minWidth: 0, height: 'calc(100vh - 185px)' }} size="small" aria-label="report table" stickyHeader>
 									<TableHead>
 										<TableRow>
 											<TableCell>Date</TableCell>
@@ -124,15 +124,13 @@ const SalesReport = () => {
 									</TableHead>
 									<TableBody>
 										{transactions.map((item: TransactionProps) => (
-											<Tooltip title="Double-click to view details" placement='top' key={item.transactionDate}>
-												<TableRow key={item.transactionId} sx={{ cursor: 'pointer', backgroundColor: transaction?.transactionId === item.transactionId ? '#2F3E4630' : '', '&:hover': { backgroundColor: '#2F3E4630' } }} onClick={(e) => openTransaction(e, item)}>
-													<TableCell component="th" scope="row">{dayjs(item.transactionDate).format('DD-MM-YYYY hh:mm:ss A')}</TableCell>
-													<TableCell align="left">{item.transactionId}</TableCell>
-													<TableCell align="left">{item.paymentMode}</TableCell>
-													<TableCell align="right">{Number(item.transactionTotal).toLocaleString()}</TableCell>
-													<TableCell align="right">{item.user}</TableCell>
-												</TableRow>
-											</Tooltip>
+											<TableRow key={item.transactionId} sx={{ cursor: 'pointer', backgroundColor: transaction?.transactionId === item.transactionId ? '#2F3E4615' : '', '&:hover': { backgroundColor: '#2F3E4615' } }} onClick={(e) => openTransaction(e, item)}>
+												<TableCell component="th" scope="row">{dayjs(item.transactionDate).format('DD-MM-YYYY hh:mm:ss A')}</TableCell>
+												<TableCell align="left">{item.transactionId}</TableCell>
+												<TableCell align="left">{item.paymentMode}</TableCell>
+												<TableCell align="right">{Number(item.transactionTotal).toLocaleString()}</TableCell>
+												<TableCell align="right">{item.user}</TableCell>
+											</TableRow>
 										))}
 									</TableBody>
 								</Table>

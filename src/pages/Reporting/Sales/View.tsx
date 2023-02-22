@@ -6,7 +6,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 interface ViewModalProps {
 	open: boolean;
 	close: () => void;
-	data: TransactionProps;
+	data: TransactionProps | null;
 }
 
 interface TransactionProps {
@@ -66,10 +66,10 @@ const View = ({ open, close, data }: ViewModalProps) => {
 			<ModalTitle title="Transaction Details" />
 			<Grid container spacing={2} marginTop={0}>
 				<Grid item xs={6}>
-					<CellText text={`Transaction ID: ${data.transactionId}`} />
+					<CellText text={`Transaction ID: ${data?.transactionId}`} />
 				</Grid>
 				<Grid item xs={6}>
-					<CellText text={`Cashier: ${data.user}`} />
+					<CellText text={`Cashier: ${data?.user}`} />
 				</Grid>
 				<Grid item xs={6}>
 				</Grid>
@@ -85,7 +85,7 @@ const View = ({ open, close, data }: ViewModalProps) => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{data.products?.map(item => (
+								{data?.products?.map(item => (
 									<TableRow key={item._id}>
 										<TableCell align="center"><CellText text={item.orderQty} weight={400} /></TableCell>
 										<TableCell><CellText text={item.name} weight={400} /></TableCell>
@@ -98,16 +98,16 @@ const View = ({ open, close, data }: ViewModalProps) => {
 					</TableContainer>
 				</Grid>
 				<Grid item xs={12}>
-					<CellText text={`Total: ₦${data.transactionTotal.toLocaleString()}`} />
+					<CellText text={`Total: ₦${data?.transactionTotal.toLocaleString()}`} />
 				</Grid>
 				<Grid item xs={4}>
-					<CellText text={`PaymentMode: ${data.paymentMode}`} weight={400} />
+					<CellText text={`PaymentMode: ${data?.paymentMode}`} weight={400} />
 				</Grid>
 				<Grid item xs={4}>
-					<CellText text={`Bank/Issuer: ${data.bank}`} weight={400} />
+					<CellText text={`Bank/Issuer: ${data?.bank}`} weight={400} />
 				</Grid>
 				<Grid item xs={4}>
-					<CellText text={`Reference ID: ${data.referenceNumber}`} weight={400} />
+					<CellText text={`Reference ID: ${data?.referenceNumber}`} weight={400} />
 				</Grid>
 				<Grid item xs={12}>
 					<Grid container spacing={2} sx={{ marginTop: 0, marginBottom: 3 }}>
