@@ -6,7 +6,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useFormik } from 'formik';
-import FormikErrorFocus from 'formik-error-focus';
 
 interface User {
 	username: string;

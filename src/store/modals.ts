@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
 	cartModal: false,
+	selectItemModal: false,
 	deleteModal: false,
 	newProductModal: false,
 	editProductModal: false,
@@ -20,6 +21,9 @@ export const modalSlice = createSlice({
 	reducers: {
 		setCartModal: (state, action) => {
 			state.cartModal = action.payload;
+		},
+		setItemModal: (state, action) => {
+			state.selectItemModal = action.payload;
 		},
 		setProductModal: (state, action) => {
 			state.newProductModal = action.payload;
@@ -54,5 +58,5 @@ export const modalSlice = createSlice({
 	}
 });
 
-export const { setCartModal, setProductModal, setEditProductModal, setNewBrandModal, setEditBrandModal, setDeleteBrandModal, setCategoryModal, setDeleteProductModal, setNewCategoryModal, setEditCategoryModal, setDeleteCategoryModal } = modalSlice.actions;
+export const { setCartModal, setItemModal, setProductModal, setEditProductModal, setNewBrandModal, setEditBrandModal, setDeleteBrandModal, setCategoryModal, setDeleteProductModal, setNewCategoryModal, setEditCategoryModal, setDeleteCategoryModal } = modalSlice.actions;
 export default modalSlice.reducer;

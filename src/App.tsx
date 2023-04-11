@@ -9,6 +9,7 @@ import Products from './pages/Products';
 import Brands from './pages/Products/Brands';
 import Category from './pages/Products/Category';
 import SalesReport from './pages/Reporting/Sales';
+import ErrorPage from './pages/NotFound';
 
 type Props = {};
 
@@ -30,8 +31,9 @@ const App = (props: Props) => {
           <Route path="/reports" element={<Outlet />}>
             <Route path="sales" element={<SalesReport />} />
           </Route>
+          <Route path="/*" element={<ErrorPage />} />
         </Route>
-
+        <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
   )

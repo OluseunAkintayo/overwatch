@@ -1,9 +1,11 @@
 import React, { FormEvent } from 'react';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { ModalTitle, ModalWrapper } from '../../../lib';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Box, Button, Grid, MenuItem, TextField } from '@mui/material';
+import { Autocomplete, Box, Button, Grid, MenuItem, TextField } from '@mui/material';
 import { DesktopDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 interface FilterModalProps {
 	open: boolean;
@@ -11,6 +13,7 @@ interface FilterModalProps {
 	refetch: () => void;
 	data: TransactionProps[] | null;
 	setTransactions: any;
+	users: { name: string; id: string }[];
 }
 
 interface TransactionProps {
@@ -29,45 +32,57 @@ interface TransactionProps {
 	user: string;
 }
 
-const Filter = ({ open, close, refetch, data, setTransactions }: FilterModalProps) => {
-	const [date, setDate] = React.useState({ start: dayjs().startOf('d'), end: dayjs().endOf('d')});
-	const [paymentMode, setPaymentMode] = React.useState<string>('');
+interface DataProps {
+	startDate: Dayjs;
+	endDate: Dayjs;
+	paymentMode: string;
+	user: string;
+}
 
-	const handleStartDateChange = (value: any) => {
-		setDate({ ...date, start: value });
-	}
-	const handleEndDateChange = (value: any) => {
-		setDate({ ...date, end: value });
-	}
+const Filter = ({ open, close, refetch, data, setTransactions, users }: FilterModalProps) => {
 
-	const submit = (e: FormEvent) => {
-		e.preventDefault();
-		let filteredData: TransactionProps[] | undefined = [];
-		filteredData = data?.filter(item => dayjs(item.transactionDate) >= date.start && date.end >= dayjs(item.transactionDate));
-		if(paymentMode.trim().length > 1) {
-			filteredData = filteredData?.filter(item => item.paymentMode === paymentMode);
-		}
-		// console.log(filteredData);
-		setTransactions(filteredData);
-		close();
+	const submit = async (data: DataProps) => {
+		console.log(data);
+		// let filteredData: TransactionProps[] | undefined = [];
+		// filteredData = data?.filter(item => dayjs(item.transactionDate) >= date.start && date.end >= dayjs(item.transactionDate));
+		// if(paymentMode.trim().length > 1) {
+		// 	filteredData = filteredData?.filter(item => item.paymentMode === paymentMode);
+		// }
+		// // console.log(filteredData);
+		// setTransactions(filteredData);
+		// close();
 	}
 
-	// React.useEffect(() => {
-	// 	refetch();
-	// }, []);
+	const initialValues = {
+		startDate: dayjs().startOf('M'), endDate: dayjs().endOf('d'), paymentMode: '', user: ''
+	}
+
+	const validationSchema = Yup.object().shape({
+		
+	});
+
+	const formik = useFormik({
+		initialValues, validationSchema,
+		validateOnChange: false, enableReinitialize: true,
+		onSubmit: (values) => submit(values)
+	});
+
+	const { handleSubmit, handleChange, touched, errors, values, setFieldValue } = formik;
+
+	console.log(errors);
 
 	return (
 		<ModalWrapper open={open} close={close}  modalClass={'newProductModal'}>
 			<ModalTitle title="Filter Report" />
-			<Box component="form" onSubmit={submit} sx={{ marginTop: 4 }}>
+			<Box component="form" onSubmit={handleSubmit} sx={{ marginTop: 4 }}>
 				<Grid container spacing={3} marginTop={2}>
 					<Grid item xs={6}>
 						<LocalizationProvider dateAdapter={AdapterDayjs}>
 							<DesktopDateTimePicker
 								label="Start Date"
 								disableFuture
-								value={date.start}
-								onChange={handleStartDateChange}
+								value={values.startDate}
+								onChange={(val) => setFieldValue('startDate', val)}
 								renderInput={(params) => <TextField {...params} fullWidth />}
 							/>
 						</LocalizationProvider>
@@ -77,19 +92,39 @@ const Filter = ({ open, close, refetch, data, setTransactions }: FilterModalProp
 							<DesktopDateTimePicker
 								label="End Date"
 								disableFuture
-								value={date.end}
-								onChange={handleEndDateChange}
+								value={values.endDate}
+								onChange={(val) => setFieldValue('endDate', val)}
 								renderInput={(params) => <TextField {...params} fullWidth />}
 							/>
 						</LocalizationProvider>
 					</Grid>
-					<Grid item xs={12}>
-						<TextField select fullWidth label="Payment Mode" value={paymentMode} onChange={e => setPaymentMode(e.target.value)}>
+					<Grid item xs={6}>
+						<TextField select fullWidth
+							label="Payment Mode" value={values.paymentMode} onChange={handleChange}
+							error={touched.paymentMode && Boolean(errors.paymentMode)}
+							helperText={touched.paymentMode && errors.paymentMode}
+						>
 							<MenuItem value="">Choose</MenuItem>
 							<MenuItem value="cash">Cash</MenuItem>
 							<MenuItem value="card">Card</MenuItem>
 							<MenuItem value="transfer">Transfer</MenuItem>
 						</TextField>
+					</Grid>
+					<Grid item xs={6}>
+						<Autocomplete
+							id="user"
+							options={users}
+							getOptionLabel={(val) => val.name}
+							onChange={(e, value) => setFieldValue("user", value?.name)}
+							renderInput={(params) =>(
+								<TextField
+									{...params}
+									name="user" label="User" fullWidth
+									error={touched.user && Boolean(errors.user)}
+									helperText={touched.user && errors.user}
+								/>
+							)}
+						/>
 					</Grid>
 					<Grid item xs={12}>
 						{/* <TextField select fullWidth label="Cashier" value={paymentMode} onChange={e => setPaymentMode(e.target.value)}>

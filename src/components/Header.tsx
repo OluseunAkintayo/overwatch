@@ -169,7 +169,7 @@ const Header = (props: Props) => {
                 onClose={closeReportingMenu}
               >
                 <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/reports/sales"); }}>Sales Reports</MenuItem>
-                <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/reports/inventory"); }}>Inventory Report</MenuItem>
+                {/* <MenuItem sx={itemStyle} onClick={() => { handleClose(); navigate("/reports/inventory"); }}>Inventory Report</MenuItem> */}
               </Menu>
             </div>
         </Toolbar>

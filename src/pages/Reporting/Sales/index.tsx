@@ -37,7 +37,8 @@ interface TransactionProps {
 
 const SalesReport = () => {
 	const [error, setError] = React.useState<any>(null);
-	const [filterModal, setFilterModal] = React.useState<boolean>(false);
+	const [usersError, setUsersError] = React.useState<any>(null);
+	const [filterModal, setFilterModal] = React.useState<boolean>(true);
 	const [transactions, setTransactions] = React.useState<TransactionProps[] | null>(null);
 	const [transaction, setTransaction] = React.useState<TransactionProps | null>(null);
 	const [viewModal, setViewModal] = React.useState(false);
@@ -70,20 +71,41 @@ const SalesReport = () => {
 		networkMode: 'offlineFirst'
 	});
 
-	React.useEffect(() => {
-		if(data?.data) {
-			setTransactions(data?.data);
+	const fetchCashiers = async () => {
+		const token = localStorage.getItem('token') as string | null;
+		const config = {
+			url: 'users/lite',
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Headers': '*',
+				'Authorization': `Bearer ${token}`
+			}
 		}
+	
+		try {
+			const response = await axios.request(config);
+			if(response.status === 200 && response.data.status === 1) {
+				return response.data;
+			}
+		} catch (error) {
+			setUsersError(error);
+		}
+	}
+
+	const { data: users, isLoading: userLoading, refetch: usersRefetch } = useQuery({
+		queryKey: ['cashiers'], queryFn: fetchCashiers,
+		keepPreviousData: true, cacheTime: 600000, staleTime: 600000,
+		networkMode: 'offlineFirst'
+	});
+
+	React.useEffect(() => {
+		if(data?.data) setTransactions(data?.data);
 	}, [data]);
-
-
 
 	const openTransaction = (e: React.MouseEvent, item: TransactionProps) => {
 		setTransaction(item);
 		if(e.detail >= 2) setViewModal(true);
-	}
-	const selectTransaction = (item: TransactionProps) => {
-		setTransaction(item);
 	}
 
 	React.useEffect((): () => void => {
@@ -126,7 +148,7 @@ const SalesReport = () => {
 										{transactions.map((item: TransactionProps) => (
 											<TableRow key={item.transactionId} sx={{ cursor: 'pointer', backgroundColor: transaction?.transactionId === item.transactionId ? '#2F3E4615' : '', '&:hover': { backgroundColor: '#2F3E4615' } }} onClick={(e) => openTransaction(e, item)}>
 												<TableCell component="th" scope="row">{dayjs(item.transactionDate).format('DD-MM-YYYY hh:mm:ss A')}</TableCell>
-												<TableCell align="left">{item.transactionId}</TableCell>
+												<TableCell align="left">{item._id}</TableCell>
 												<TableCell align="left">{item.paymentMode}</TableCell>
 												<TableCell align="right">{Number(item.transactionTotal).toLocaleString()}</TableCell>
 												<TableCell align="right">{item.user}</TableCell>
@@ -140,7 +162,7 @@ const SalesReport = () => {
 				</DataContainer>
 			</Container>
 			<React.Fragment>
-				{ filterModal && <Filter open={filterModal} close={() => setFilterModal(false)} data={data.data} setTransactions={setTransactions} refetch={refetch} /> }
+				{ filterModal && <Filter open={filterModal} close={() => setFilterModal(false)} data={data && data.data} setTransactions={setTransactions} refetch={refetch} users={users?.data} /> }
 				{ viewModal && <View open={viewModal} close={() => setViewModal(false)} data={transaction} /> }
 			</React.Fragment>
 		</Section>

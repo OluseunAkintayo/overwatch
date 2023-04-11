@@ -261,16 +261,15 @@ const mapDispatchToProps = (dispatch: (arg0: { payload: any; type: "modals/setPr
 
 export default connect(mapStateToProps, mapDispatchToProps)(Products);
 
-const Container = styled.div`
-	padding: 1rem;
-`;
+const Container = styled.div``;
+
 const TopBar = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	gap: 1rem;
-	
+	gap: 1rem;	
 `;
+
 const DataTable = styled.div`
 	height: calc(100vh - 220px);
 	margin-top: 1rem;

@@ -156,7 +156,7 @@ const EditProduct = ({ open, close, refetch, brandsData, categoriesData, product
 	return (
 		<ModalWrapper open={open} close={close}  modalClass={'newProductModal'}>
 			<ModalBody>
-				<ModalTitle title="New Product" />
+				<ModalTitle title="Edit Product" />
 				<Box component="form" autoComplete="off" onSubmit={handleSubmit}>
 					<Grid container spacing={3} marginTop={0} alignItems="flex-start">
 						<Grid item xs={12}>
@@ -265,7 +265,7 @@ const EditProduct = ({ open, close, refetch, brandsData, categoriesData, product
 								/>
 							</LocalizationProvider>
 						</Grid>
-						<Grid item xs={6}>
+						<Grid item xs={12}>
 							<FormControlLabel
 								name="isActive"
 								control={<Checkbox checked={values.isActive} />}

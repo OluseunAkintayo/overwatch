@@ -8,24 +8,18 @@ import axios from 'axios';
 
 interface ProductProps {
 	_id: string;
-	name: string;
-	productCode: string;
-	description: string;
-	brand: string;
-	category: string;
-	subcategory: string;
-	pricing: {
-		cost: string;
-		retail: string | number;
-	},
-	inStock: boolean;
-	isActive: boolean
-	imgUrl?: string;
-	expiryDate?: string;
-	createdAt: string;
-	modifiedAt?: string;
-	quantity: number;
-	orderQty: number;
+  name: string;
+  productCode: string;
+  description: string;
+  brand: string;
+  category: string;
+  subcategory?: string;
+  pricing: {
+    cost: string;
+    retail: string | number;
+  };
+  quantity: number;
+  orderQty: number;
 }
 
 interface CartProps {
@@ -100,20 +94,22 @@ const Cart = ({ open, close, cart, setCart, refetch }: CartProps) => {
 	const nanoid = customAlphabet('1234567890QWERTYUIO-PASDFGHJKLZXCVBNM', 10);
 	const transactionId = nanoid();
 	const token = localStorage.getItem('token');
+	const user = localStorage.getItem('user');
+	const parsedUser = user && JSON.parse(user);
+	const { _id: userId } = parsedUser;
 
 	const submit = async (e: React.FormEvent): Promise<void> => {
 		setLoading(true);
 		e.preventDefault();
 		const transactionData = {
-			customerName: customer.trim() === '' ? 'Customer' : customer,
+			customerName: customer.trim() === '' ? '' : customer,
+			userId,
 			transactionId,
 			transactionDate: new Date().toISOString(),
-			transactionTotal: total,
+			amount: total,
 			products: cart,
 			paymentMode,
 			bank,
-			amountTendered: Number(amountTendered),
-			balance,
 			referenceNumber,
 			transactionType: 'sale'
 		}

@@ -14,7 +14,7 @@ const BarChart = ({ description, value }: ChartProps) => {
 				<BarChartIcon sx={{ fontSize: '6rem', color: 'teal' }} />
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
 					<Typography variant="h4" sx={{ textAlign: 'center' }}>{value}</Typography>
-					<Typography variant='h6' sx={{ lineHeight: '80%', fontSize: 13, fontWeight: 400 }}>{description}</Typography>
+					<Typography variant="h6" sx={{ lineHeight: '90%', fontSize: 12, fontWeight: 400 }}>{description}</Typography>
 				</Box>
 			</Box>
 		</Box>

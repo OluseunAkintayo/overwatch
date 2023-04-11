@@ -1,10 +1,8 @@
-import { Box, Grid, TableContainer, Typography } from '@mui/material';
 import React from 'react';
+import { Box, Grid, Typography } from '@mui/material';
 import BarChart from './BarChart';
 
-type Props = {}
-
-const Home = (props: Props) => {
+const Home = () => {
 	return (
 		<Box>
 			<Grid container spacing={3}>

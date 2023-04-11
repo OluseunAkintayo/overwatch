@@ -6,9 +6,7 @@ type Props = {};
 
 const PrivateRoute = (props: Props) => {
 	const token = localStorage.getItem('token');
-	return (
-		token ? <Layout><Outlet /></Layout> : <Navigate to="/auth/login" />
-	)
+	return token ? <Layout><Outlet /></Layout> : <Navigate to="/auth/login" />
 }
 
 export default PrivateRoute;
