@@ -10,6 +10,8 @@ import Brands from './pages/Products/Brands';
 import Category from './pages/Products/Category';
 import SalesReport from './pages/Reporting/Sales';
 import ErrorPage from './pages/NotFound';
+import Store from './pages/Store';
+import Supply from './pages/Store/Supply';
 
 type Props = {};
 
@@ -27,6 +29,10 @@ const App = (props: Props) => {
             <Route index element={<Products />} />
             <Route path="brands" element={<Brands />} />
             <Route path="categories" element={<Category />} />
+          </Route>
+          <Route path="/store" element={<Outlet />}>
+            <Route index element={<Store />} />
+            <Route path="new-supply" element={<Supply />} />
           </Route>
           <Route path="/reports" element={<Outlet />}>
             <Route path="sales" element={<SalesReport />} />

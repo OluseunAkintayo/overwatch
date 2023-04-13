@@ -91,7 +91,7 @@ const Cart = ({ open, close, cart, setCart, refetch }: CartProps) => {
 		if(cart.length < 1) return true;
 	}
 
-	const nanoid = customAlphabet('1234567890QWERTYUIO-PASDFGHJKLZXCVBNM', 10);
+	const nanoid = customAlphabet('1234567890QWERTYUIOPASDFGHJKLZXCVBNM', 10);
 	const transactionId = nanoid();
 	const token = localStorage.getItem('token');
 	const user = localStorage.getItem('user');
@@ -100,18 +100,26 @@ const Cart = ({ open, close, cart, setCart, refetch }: CartProps) => {
 
 	const submit = async (e: React.FormEvent): Promise<void> => {
 		setLoading(true);
+		let newCart = cart.map((item) => {
+			const { quantity, description, ...cartProps } = item;
+			return cartProps;
+		})
 		e.preventDefault();
 		const transactionData = {
-			customerName: customer.trim() === '' ? '' : customer,
-			userId,
-			transactionId,
 			transactionDate: new Date().toISOString(),
-			amount: total,
-			products: cart,
-			paymentMode,
-			bank,
-			referenceNumber,
-			transactionType: 'sale'
+			transactionId,
+			userId,
+			products: newCart,
+			transactionTotal: total,
+			transactionType: 'sale',
+			payment: {
+				paymentMode,
+				bank,
+				referenceNumber,
+			},
+			other: {
+				customerName: customer.trim() === '' ? '' : customer
+			}
 		}
 
 		const config = {

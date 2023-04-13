@@ -29,6 +29,13 @@ a {
   border-radius: 0.25rem !important;
 }
 
+.addItemModal {
+  overflow-y: auto;
+  width: 100%;
+  max-width: 400px !important;
+  border-radius: 0.25rem !important;
+}
+
 .cartModal {
   max-height: 75vh;
   overflow-y: auto;

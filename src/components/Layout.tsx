@@ -6,12 +6,12 @@ interface Props {
 	children: ReactNode
 }
 
-const Layout = (props: Props) => {
+const Layout = ({ children }: Props) => {
 	return (
 		<React.Fragment>
 			<Header />
-			<Container sx={{ pl: { xs: 2 }, pr: { xs: 2 }, py: { xs: 2 }, height: 'calc(100vh - 64px)', overflowY: 'auto' }} maxWidth="sl">
-				{ props.children } 
+			<Container sx={{ pl: { xs: 2 }, pr: { xs: 2 }, pt: { xs: 1 }, pb: { xs: 0 }, height: 'calc(100vh - 64px)', overflowY: 'auto' }} maxWidth="sl">
+				{ children } 
 			</Container>
 		</React.Fragment>
 	)

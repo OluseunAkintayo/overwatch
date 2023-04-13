@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Box,
+  Button,
   CircularProgress,
   IconButton,
   Table,
@@ -19,9 +20,9 @@ import { Add, ShoppingCartCheckoutOutlined } from "@mui/icons-material";
 import { setCartModal, setItemModal } from "../../store/modals";
 import { connect } from "react-redux";
 import axios from "axios";
-import { toast } from "react-toastify";
 import Cart from "./Cart";
 import AddItemModal from "./AddItemModal";
+import { Link, useNavigate } from "react-router-dom";
 
 interface ShopProps {
   cartModal: boolean;
@@ -77,6 +78,7 @@ interface CartItemProps {
 const Shop = (props: ShopProps) => {
   const { cartModal, openCartModal, closeCartModal, openItemModal, closeItemModal, selectItemModal } = props;
 
+  const navigate = useNavigate();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<any>(null);
   const [item, setItem] = React.useState<CartItemProps | null>(null);
@@ -115,8 +117,7 @@ const Shop = (props: ShopProps) => {
 
   // search
   const [search, setSearch] = React.useState<string>("");
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setSearch(e.target.value);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value);
 
   const ColTitle = (props: TitleProps) => {
     return <Typography variant="h6" fontSize="1rem">{props.text}</Typography>
@@ -164,6 +165,11 @@ const Shop = (props: ShopProps) => {
     refetch();
   }, []);
 
+  // check
+  React.useEffect(() => {
+    if(error && error.response?.status === 401 && error.response?.data?.message.toLowerCase().includes("expired")) navigate("/auth/login");
+  }, [error]);
+
   return (
     <Box>
       <TopBar>
@@ -187,10 +193,10 @@ const Shop = (props: ShopProps) => {
       <Box sx={{ height: "calc(100vh - 149px)" }}>
         {data ? (
           <TableContainer component={Box}>
-            <Table sx={{ minWidth: 750 }} aria-label="products table">
+            <Table sx={{ minWidth: 750, mt: 1 }} aria-label="products table" size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 700 }}>Product Description</TableCell>
+                  <TableCell sx={{ fontWeight: 700, pl: 0 }}>Product Description</TableCell>
                   <TableCell sx={{ fontWeight: 700 }} align="center">Quantity</TableCell>
                   <TableCell sx={{ fontWeight: 700 }} align="right">Price</TableCell>
                   <TableCell sx={{ fontWeight: 700 }} align="center">Add</TableCell>
@@ -212,14 +218,12 @@ const Shop = (props: ShopProps) => {
                     <TableRow
                       key={product.name}
                       sx={{
-                        "&:hover": {backgroundColor: "rgba(0,0,0,0.1)", cursor: "pointer"},
-                        backgroundColor: product?._id === item?._id ? "rgba(0,0,0,0.06)" : "",
+                        "&:hover": {backgroundColor: "rgba(0,0,0,0.07)", cursor: "pointer"},
+                        backgroundColor: product?._id === item?._id ? "rgba(0,0,0,0.07)" : "",
                       }}
                       onClick={(e) => selectProduct(e, product)}
                     >
-                      <TableCell component="th" scope="row">
-                        {product.name}
-                      </TableCell>
+                      <TableCell sx={{ pl: 0 }} scope="row">{product.name}</TableCell>
                       <TableCell align="center">{product.quantity}</TableCell>
                       <TableCell align="right">
                         {Number(product.pricing.retail).toLocaleString()}
@@ -240,9 +244,17 @@ const Shop = (props: ShopProps) => {
           </Box>
         ) : (
           error && (
-            <Box sx={{ height: "100%", display: "grid", placeItems: "center", width: '100%' }}>
+            <Box sx={{ height: "100%", display: "grid", placeItems: "center", overflow: 'auto' }}>
               <Typography variant="h5" color="error">
-                Error {error?.response?.status}:{" "} {JSON.stringify(error, null)}
+                {
+                  error.response?.status === 401 ?
+                  <Box>
+                    Error {error.response.status}: {error.response?.data?.message}.<br />
+                    <Link to="/auth/login" style={{ textDecoration: 'underline' }}>Sign out</Link> and sign in again
+                  </Box>
+                  : JSON.stringify(error, null, 2)
+                }
+                {/* Error {error?.response?.status}:{" "} {JSON.stringify(error, undefined, 2)} */}
               </Typography>
             </Box>
           )
@@ -285,17 +297,18 @@ const TopBar = styled.div`
   justify-content: space-between;
   gap: 1rem;
   width: 100%;
+  margin-top: 0.75rem;
 `;
 
 const Count = styled.span`
 	position: absolute;
-	top: -30%;
-	right: -80%;
-	font-size: 10;
+	top: -40%;
+	right: -90%;
+	font-size: 11px;
 	background-color: teal;
 	color: #FFFFFF;
-	height: 1.25rem;
-	width: 1.25rem;
+	height: 1.5rem;
+	width: 1.5rem;
 	border-radius: 50%;
 	display: grid;
 	place-items: center;
