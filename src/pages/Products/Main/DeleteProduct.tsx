@@ -73,7 +73,7 @@ const DeleteProduct = ({ open, close, refetch, product }: DeleteModalProps) => {
 						</Box>
 					</Grid>
 					<Grid item xs={12}>
-						<Typography sx={{ textAlign: 'center' }} variant="h5">Sure to delete the product <span>{product.name}</span>?</Typography>
+						<Typography sx={{ textAlign: 'center' }} variant="h5">Sure to delete the product <span>{product?.name}</span>?</Typography>
 						<Typography sx={{ textAlign: 'center' }} color="error">This action is irreversible</Typography>
 					</Grid>
 					<Grid item xs={12}>
