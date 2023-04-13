@@ -165,7 +165,7 @@ const Shop = (props: ShopProps) => {
     refetch();
   }, []);
 
-  // check
+  // check token and redirect to login if token has expired
   React.useEffect(() => {
     if(error && error.response?.status === 401 && error.response?.data?.message.toLowerCase().includes("expired")) navigate("/auth/login");
   }, [error]);
@@ -254,7 +254,6 @@ const Shop = (props: ShopProps) => {
                   </Box>
                   : JSON.stringify(error, null, 2)
                 }
-                {/* Error {error?.response?.status}:{" "} {JSON.stringify(error, undefined, 2)} */}
               </Typography>
             </Box>
           )

@@ -11,18 +11,21 @@ interface ViewModalProps {
 
 interface TransactionProps {
 	_id: string;
-	products: ProductProps[],
-	total: number;
-	paymentMode: string;
-	bank: string | undefined,
-	amountTendered: number;
-	balance: number;
-	customerName: string;
-	referenceNumber: string | undefined,
+	products: ProductProps[];
+	user: string;
+	userId: string;
 	transactionDate: string;
 	transactionId: string;
 	transactionTotal: number;
-	user: string;
+	transactionType: number;
+	other: {
+		customer?: string;
+	}
+	payment: {
+		bank?: string;
+		paymentMode: string;
+		referenceNumber?: string;
+	}
 }
 
 interface ProductProps {
@@ -41,10 +44,10 @@ interface ProductProps {
 	isActive: string;
 	imgUrl: string | undefined;
 	expiryDate: string;
-	"createdAt": "2022-12-29T13:35:30.811Z",
-	"modifiedAt": "2022-12-29T13:36:43.327Z",
-	"quantity": 100,
-	"orderQty": 4
+	createdAt: string;
+	modifiedAt: string;
+	quantity: number;
+	orderQty: number;
 }
 
 interface CellTextProps {
@@ -101,13 +104,13 @@ const View = ({ open, close, data }: ViewModalProps) => {
 					<CellText text={`Total: ₦${data?.transactionTotal.toLocaleString()}`} />
 				</Grid>
 				<Grid item xs={4}>
-					<CellText text={`PaymentMode: ${data?.paymentMode}`} weight={400} />
+					<CellText text={`PaymentMode: ${data?.payment.paymentMode}`} weight={400} />
 				</Grid>
 				<Grid item xs={4}>
-					<CellText text={`Bank/Issuer: ${data?.bank}`} weight={400} />
+					<CellText text={`Bank/Issuer: ${data?.payment.bank}`} weight={400} />
 				</Grid>
 				<Grid item xs={4}>
-					<CellText text={`Reference ID: ${data?.referenceNumber}`} weight={400} />
+					<CellText text={`Reference ID: ${data?.payment.referenceNumber}`} weight={400} />
 				</Grid>
 				<Grid item xs={12}>
 					<Grid container spacing={2} sx={{ marginTop: 0, marginBottom: 3 }}>

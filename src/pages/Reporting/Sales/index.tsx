@@ -1,47 +1,41 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { TitleBar } from '../../../lib';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Box, Button, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import Filter from './Filter';
 import View from './View';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-
-const Section = styled.div`
-	position: relative;
-`;
-const Container = styled.div`
-	padding: 1rem;
-`;
-const DataContainer = styled.div`
-	height: calc(100vh - 170px);
-`;
+import { Link, useNavigate } from 'react-router-dom';
 
 interface TransactionProps {
 	_id: string;
-	products: [],
-	total: number;
-	paymentMode: string;
-	bank: string | undefined,
-	amountTendered: number;
-	balance: number;
-	customerName: string;
-	referenceNumber: string | undefined,
+	products: [];
+	user: string;
+	userId: string;
 	transactionDate: string;
 	transactionId: string;
 	transactionTotal: number;
-	user: string;
+	transactionType: number;
+	other: {
+		customer?: string;
+	}
+	payment: {
+		bank?: string;
+		paymentMode: string;
+		referenceNumber?: string;
+	}
 }
 
 const SalesReport = () => {
 	const [error, setError] = React.useState<any>(null);
 	const [usersError, setUsersError] = React.useState<any>(null);
-	const [filterModal, setFilterModal] = React.useState<boolean>(true);
+	const [filterModal, setFilterModal] = React.useState<boolean>(false);
 	const [transactions, setTransactions] = React.useState<TransactionProps[] | null>(null);
 	const [transaction, setTransaction] = React.useState<TransactionProps | null>(null);
 	const [viewModal, setViewModal] = React.useState(false);
+	const navigate = useNavigate();
 
 	const fetchFn = async () => {
 		const token = localStorage.getItem('token') as string | null;
@@ -105,6 +99,7 @@ const SalesReport = () => {
 
 	const openTransaction = (e: React.MouseEvent, item: TransactionProps) => {
 		setTransaction(item);
+		console.log(item);
 		if(e.detail >= 2) setViewModal(true);
 	}
 
@@ -118,10 +113,17 @@ const SalesReport = () => {
 	// 	setTransactions(today);
 	// }, [data]);
 
+	// check token and redirect to login if token has expired
+  React.useEffect(() => {
+    if(error && error.response?.status === 401 && error.response?.data?.message.toLowerCase().includes("expired")) navigate("/auth/login");
+  }, [error]);
+
 	return (
 		<Section>
-			<TitleBar text="Sales Report" />
-			<Button onClick={() => setFilterModal(true)} variant="outlined" sx={{ position: 'absolute', top: '0.25rem', right: '1rem' }}>Filter</Button>
+			<Topbar>
+				<TitleBar text="Sales Report" />
+				<Button onClick={() => setFilterModal(true)} variant="outlined">Filter</Button>
+			</Topbar>
 			<Container>
 				<DataContainer>
 					{
@@ -129,29 +131,36 @@ const SalesReport = () => {
 						<Box sx={{ height: '50vh', display: 'grid', placeItems: 'center' }}><CircularProgress size="6rem" /></Box>
 						: (
 							error ?
-							<Box sx={{ height: '50vh', display: 'grid', placeItems: 'center' }}>
-								<Typography color="error" variant="h5">{error?.status}: Error loading transactions</Typography>
+							<Box sx={{ height: "100%", display: "grid", placeItems: "center", overflow: 'auto' }}>
+								<Typography variant="h5" color="error">
+									{
+										error.response?.status === 401 ?
+										<Box>
+											Error {error.response.status}: {error.response?.data?.message} <br />
+											<Link to="/auth/login" style={{ textDecoration: 'underline' }}>Sign out</Link> and sign in again
+										</Box>
+										: JSON.stringify(error, null, 2)
+									}
+								</Typography>
 							</Box>
 							: transactions &&
-							<TableContainer component={Paper}>
-								<Table sx={{ minWidth: 0, height: 'calc(100vh - 185px)' }} size="small" aria-label="report table" stickyHeader>
+							<TableContainer sx={{ height: 'calc(100vh - 185px)' }} component={Box}>
+								<Table sx={{ minWidth: 0 }} size="small" aria-label="report table" stickyHeader>
 									<TableHead>
 										<TableRow>
-											<TableCell>Date</TableCell>
-											<TableCell align="left">Transaction ID</TableCell>
-											<TableCell align="left">Payment Mode</TableCell>
-											<TableCell align="right">Amount</TableCell>
-											<TableCell align="left">User</TableCell>
+											<TableCell sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', fontWeight: 700, paddingLeft: 1 }}>Date</TableCell>
+											<TableCell sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', fontWeight: 700 }} align="left">Transaction ID</TableCell>
+											<TableCell sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', fontWeight: 700 }} align="right">Amount</TableCell>
+											<TableCell sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', fontWeight: 700 }} align="center">User</TableCell>
 										</TableRow>
 									</TableHead>
 									<TableBody>
 										{transactions.map((item: TransactionProps) => (
-											<TableRow key={item.transactionId} sx={{ cursor: 'pointer', backgroundColor: transaction?.transactionId === item.transactionId ? '#2F3E4615' : '', '&:hover': { backgroundColor: '#2F3E4615' } }} onClick={(e) => openTransaction(e, item)}>
+											<TableRow key={item.transactionId} sx={{ cursor: 'pointer', backgroundColor: transaction?.transactionId === item.transactionId ? 'rgba(0, 0, 0, 0.07)' : '', '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.07)' } }} onClick={(e) => openTransaction(e, item)}>
 												<TableCell component="th" scope="row">{dayjs(item.transactionDate).format('DD-MM-YYYY hh:mm:ss A')}</TableCell>
 												<TableCell align="left">{item._id}</TableCell>
-												<TableCell align="left">{item.paymentMode}</TableCell>
 												<TableCell align="right">{Number(item.transactionTotal).toLocaleString()}</TableCell>
-												<TableCell align="right">{item.user}</TableCell>
+												<TableCell align="center">{item.user}</TableCell>
 											</TableRow>
 										))}
 									</TableBody>
@@ -170,3 +179,29 @@ const SalesReport = () => {
 }
 
 export default SalesReport;
+
+const Section = styled.div`
+	/* position: relative; */
+`;
+
+const Container = styled.div``;
+
+const DataContainer = styled.div`
+	height: calc(100vh - 170px);
+`;
+
+const Topbar = styled.div`
+	margin-top: 0.5rem;
+	display: flex;
+	width: 100%;
+	gap: 1rem;
+	align-items: center;
+	justify-content: space-between;
+	position: relative;
+	button {
+		padding: 0.125rem 0.5rem;
+		position: absolute;
+		right: 0;
+		bottom: 50%;
+	}
+`;

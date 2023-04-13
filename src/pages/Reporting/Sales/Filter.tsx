@@ -11,78 +11,93 @@ interface FilterModalProps {
 	open: boolean;
 	close: () => void;
 	refetch: () => void;
-	data: TransactionProps[] | null;
+	data: TransactionDataProps[];
 	setTransactions: any;
 	users: { name: string; id: string }[];
 }
 
-interface TransactionProps {
+interface TransactionDataProps {
 	_id: string;
-	products: [],
-	total: number;
-	paymentMode: string;
-	bank: string | undefined,
-	amountTendered: number;
-	balance: number;
-	customerName: string;
-	referenceNumber: string | undefined,
+	products: [];
+	user: string;
+	userId: string;
 	transactionDate: string;
 	transactionId: string;
 	transactionTotal: number;
-	user: string;
+	transactionType: number;
+	other: {
+		customer?: string;
+	}
+	payment: {
+		bank?: string;
+		paymentMode: string;
+		referenceNumber?: string;
+	}
 }
 
-interface DataProps {
-	startDate: Dayjs;
-	endDate: Dayjs;
-	paymentMode: string;
-	user: string;
+interface CashierProps {
+	name: string;
 }
 
-const Filter = ({ open, close, refetch, data, setTransactions, users }: FilterModalProps) => {
+const Filter = ({ open, close, refetch, data, setTransactions, users: cashiers }: FilterModalProps) => {
+	React.useEffect(() => {
+		refetch();
+	}, []);
 
-	const submit = async (data: DataProps) => {
-		console.log(data);
-		// let filteredData: TransactionProps[] | undefined = [];
-		// filteredData = data?.filter(item => dayjs(item.transactionDate) >= date.start && date.end >= dayjs(item.transactionDate));
-		// if(paymentMode.trim().length > 1) {
-		// 	filteredData = filteredData?.filter(item => item.paymentMode === paymentMode);
-		// }
-		// // console.log(filteredData);
-		// setTransactions(filteredData);
-		// close();
+	const filterParams = {
+		startDate: sessionStorage.getItem('startDate'),
+		endDate: sessionStorage.getItem('endDate'),
+		paymentMode: sessionStorage.getItem('transactionType')
 	}
 
-	const initialValues = {
-		startDate: dayjs().startOf('M'), endDate: dayjs().endOf('d'), paymentMode: '', user: ''
+	const [startDate, setStartDate] = React.useState<Dayjs | null>(filterParams.startDate ? dayjs(filterParams.startDate) : dayjs().startOf('d'));
+	const handleStartDateChange = (newValue: Dayjs | null) => {
+		if(newValue) {
+			setStartDate(newValue);
+			sessionStorage.setItem('startDate', newValue.toISOString());
+		}
+	};
+
+	const [endDate, setEndDate] = React.useState<Dayjs | null>(filterParams.endDate ? dayjs(filterParams.endDate) : dayjs().endOf('d'));
+	const handleEndDateChange = (newValue: Dayjs | null) => {
+		if(newValue) {
+			setEndDate(newValue);
+			sessionStorage.setItem('endDate', newValue.toISOString());
+		}
+	};
+
+	const [paymentMode, setPaymentMode] = React.useState<string>(filterParams.paymentMode || "");
+	const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setPaymentMode(e.target.value);
+		sessionStorage.setItem('transactionType', e.target.value);
+	};
+
+	const retrievedCashier = sessionStorage.getItem('cashier');
+	const parsedCashier: CashierProps = retrievedCashier && JSON.parse(retrievedCashier);
+	const [cashier, setCashier] = React.useState<CashierProps | null>(parsedCashier);
+
+	const submit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		let filteredData = data;
+		if(startDate && endDate) {
+			filteredData = filteredData?.filter((item: TransactionDataProps) => startDate <= dayjs(item.transactionDate) && endDate >= dayjs(item.transactionDate));
+		}
+		setTransactions(filteredData);
+		close();
 	}
-
-	const validationSchema = Yup.object().shape({
-		
-	});
-
-	const formik = useFormik({
-		initialValues, validationSchema,
-		validateOnChange: false, enableReinitialize: true,
-		onSubmit: (values) => submit(values)
-	});
-
-	const { handleSubmit, handleChange, touched, errors, values, setFieldValue } = formik;
-
-	console.log(errors);
 
 	return (
-		<ModalWrapper open={open} close={close}  modalClass={'newProductModal'}>
+		<ModalWrapper open={open} close={close}  modalClass={'filterModal'}>
 			<ModalTitle title="Filter Report" />
-			<Box component="form" onSubmit={handleSubmit} sx={{ marginTop: 4 }}>
+			<Box component="form" onSubmit={submit} sx={{ marginTop: 4 }}>
 				<Grid container spacing={3} marginTop={2}>
 					<Grid item xs={6}>
 						<LocalizationProvider dateAdapter={AdapterDayjs}>
 							<DesktopDateTimePicker
 								label="Start Date"
 								disableFuture
-								value={values.startDate}
-								onChange={(val) => setFieldValue('startDate', val)}
+								value={startDate}
+								onChange={handleStartDateChange}
 								renderInput={(params) => <TextField {...params} fullWidth />}
 							/>
 						</LocalizationProvider>
@@ -92,18 +107,14 @@ const Filter = ({ open, close, refetch, data, setTransactions, users }: FilterMo
 							<DesktopDateTimePicker
 								label="End Date"
 								disableFuture
-								value={values.endDate}
-								onChange={(val) => setFieldValue('endDate', val)}
+								value={endDate}
+								onChange={handleEndDateChange}
 								renderInput={(params) => <TextField {...params} fullWidth />}
 							/>
 						</LocalizationProvider>
 					</Grid>
 					<Grid item xs={6}>
-						<TextField select fullWidth
-							label="Payment Mode" value={values.paymentMode} onChange={handleChange}
-							error={touched.paymentMode && Boolean(errors.paymentMode)}
-							helperText={touched.paymentMode && errors.paymentMode}
-						>
+						<TextField select fullWidth label="Payment Mode" value={paymentMode} onChange={handlePaymentChange}>
 							<MenuItem value="">Choose</MenuItem>
 							<MenuItem value="cash">Cash</MenuItem>
 							<MenuItem value="card">Card</MenuItem>
@@ -112,27 +123,18 @@ const Filter = ({ open, close, refetch, data, setTransactions, users }: FilterMo
 					</Grid>
 					<Grid item xs={6}>
 						<Autocomplete
-							id="user"
-							options={users}
-							getOptionLabel={(val) => val.name}
-							onChange={(e, value) => setFieldValue("user", value?.name)}
+							id="cashier"
+							options={cashiers}
+							value={cashier}
+							getOptionLabel={(val) => val?.name || ""}
+							onChange={(e, value) => {
+								value && setCashier(value);
+								value && sessionStorage.setItem('cashier', JSON.stringify(value));
+							}}
 							renderInput={(params) =>(
-								<TextField
-									{...params}
-									name="user" label="User" fullWidth
-									error={touched.user && Boolean(errors.user)}
-									helperText={touched.user && errors.user}
-								/>
+								<TextField {...params} name="cashier" label="User" fullWidth />
 							)}
 						/>
-					</Grid>
-					<Grid item xs={12}>
-						{/* <TextField select fullWidth label="Cashier" value={paymentMode} onChange={e => setPaymentMode(e.target.value)}>
-							<MenuItem value="">All</MenuItem>
-							<MenuItem value="cash">Cash</MenuItem>
-							<MenuItem value="card">Card</MenuItem>
-							<MenuItem value="transfer">Transfer</MenuItem>
-						</TextField> */}
 					</Grid>
 					<Grid item xs={6}>
 						<Button variant="contained" fullWidth type="submit" sx={{ height: '57px' }}>Submit</Button>

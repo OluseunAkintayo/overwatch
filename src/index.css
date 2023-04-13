@@ -14,6 +14,14 @@ a {
   text-decoration: none;
 }
 
+.filterModal {
+  max-height: 80vh;
+  overflow-y: auto;
+  /* width: 100%; */
+  max-width: 750px !important;
+  border-radius: 0.25rem !important;
+}
+
 .newProductModal {
   max-height: 80vh;
   overflow-y: auto;
