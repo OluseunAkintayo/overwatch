@@ -22,7 +22,7 @@ The store lets you manage product inventory (new supplies, for now).
 The reporting module lets you see sales report per transaction. You may double-click on each item to see transaction details or use the view button (more reporting features coming soon).
 
 ### Tech Stack
-This app ia powered by the following:
+This app is powered by the following tech stack:
 	
 	- React (with Material UI component library)
 	- Node
