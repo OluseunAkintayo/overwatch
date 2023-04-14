@@ -47,7 +47,7 @@ const Filter = ({ open, close, refetch, data, setTransactions, users: cashiers }
 	const filterParams = {
 		startDate: sessionStorage.getItem('startDate'),
 		endDate: sessionStorage.getItem('endDate'),
-		paymentMode: sessionStorage.getItem('transactionType')
+		paymentMode: sessionStorage.getItem('paymentMode')
 	}
 
 	const [startDate, setStartDate] = React.useState<Dayjs | null>(filterParams.startDate ? dayjs(filterParams.startDate) : dayjs().startOf('d'));
@@ -66,7 +66,7 @@ const Filter = ({ open, close, refetch, data, setTransactions, users: cashiers }
 		}
 	};
 
-	const [paymentMode, setPaymentMode] = React.useState<string>(filterParams.paymentMode || "");
+	const [paymentMode, setPaymentMode] = React.useState<string | null>(filterParams.paymentMode);
 	const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPaymentMode(e.target.value);
 		sessionStorage.setItem('transactionType', e.target.value);
@@ -81,6 +81,10 @@ const Filter = ({ open, close, refetch, data, setTransactions, users: cashiers }
 		let filteredData = data;
 		if(startDate && endDate) {
 			filteredData = filteredData?.filter((item: TransactionDataProps) => startDate <= dayjs(item.transactionDate) && endDate >= dayjs(item.transactionDate));
+		}
+		if(paymentMode && paymentMode.length > 0) {
+			filteredData = filteredData.filter((item: TransactionDataProps) => item.payment.paymentMode === paymentMode);
+			console.log(paymentMode);
 		}
 		setTransactions(filteredData);
 		close();
