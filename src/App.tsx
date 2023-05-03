@@ -15,8 +15,6 @@ import Supply from './pages/Store/Supply';
 
 type Props = {};
 
-axios.defaults.baseURL = import.meta.env.REACT_APP_BACKEND_URL;
-
 const App = (props: Props) => {
   return (
     <BrowserRouter>

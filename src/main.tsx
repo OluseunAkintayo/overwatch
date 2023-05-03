@@ -68,7 +68,10 @@ const theme = createTheme({
 });
 
 axios.defaults.headers.post['Content-Type'] ='application/json';
-axios.defaults.baseURL = 'http://localhost:5500/api/';
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_LIVE_URL;
+console.log(import.meta.env.VITE_BACKEND_LIVE_URL);
+// axios.defaults.baseURL = import.meta.env.;
+// https://overwatch-backend.azurewebsites.net/api
 
 const client = new QueryClient();
 
