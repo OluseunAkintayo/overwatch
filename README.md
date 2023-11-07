@@ -26,7 +26,7 @@ This app is powered by the following tech stack:
 	
 	- React (with Material UI component library)
 	- Node
-	- MongoDB
+	- Postgress
 	- Azure
 
 ### In the works
@@ -35,4 +35,3 @@ This app is powered by the following tech stack:
 	Item tracking
 	Sales and inventory report by brand and category
 	Warehouse and multi-store functions
-
