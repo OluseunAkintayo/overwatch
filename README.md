@@ -2,15 +2,11 @@
 
 
 Overwatch is an inventory management system that lets you manage products and associated inventory activities such as sales and supplies.
-###### View at https://overwatch.techydna.com
+
 
 
 The following modules are currently available:
 #### Users
-As the application is protected, you would need a user profile to access it. At this time, you may use the following login information:
-
-	username: Nick (case-sensitive),
-	password: P@ssword
 
 #### Products
 This module lets you manage products and associated features such as product brands, categories, pricing, stock status, and activity status. You can create, update, and delete products.
